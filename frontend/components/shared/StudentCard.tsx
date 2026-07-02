@@ -1,0 +1,106 @@
+"use client"
+
+import { motion } from "framer-motion"
+import { MapPin, Github, Linkedin, Globe, Trophy } from "lucide-react"
+import { Student } from "@/types"
+
+const badgeColors: Record<string, { bg: string; text: string }> = {
+  green: { bg: "#5D7B3D10", text: "#5D7B3D" },
+  yellow: { bg: "#F6C94D20", text: "#b8922c" },
+  pink: { bg: "#E4568B10", text: "#E4568B" },
+  blue: { bg: "#A7C7E420", text: "#4a90c0" },
+}
+
+interface StudentCardProps {
+  student: Student
+  compact?: boolean
+}
+
+export function StudentCard({ student, compact }: StudentCardProps) {
+  return (
+    <motion.div
+      whileHover={{ y: -2 }}
+      transition={{ duration: 0.15 }}
+      className="bg-white rounded-[18px] border border-[#E8E8E8] p-5 shadow-card hover:shadow-card-hover transition-all duration-200"
+    >
+      <div className="flex items-start gap-4 mb-4">
+        <div className="relative flex-shrink-0">
+          <img
+            src={student.avatar}
+            alt={student.name}
+            className="w-12 h-12 rounded-2xl border border-[#E8E8E8] bg-gray-100"
+          />
+          {student.wins > 0 && (
+            <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#F6C94D] flex items-center justify-center">
+              <Trophy className="w-2.5 h-2.5 text-white fill-white" />
+            </div>
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-bold text-sm text-[#1F2430] truncate">{student.name}</p>
+          <p className="text-xs text-[#8B93A7] truncate">{student.college}</p>
+          <div className="flex items-center gap-1 mt-1">
+            <MapPin className="w-3 h-3 text-[#8B93A7]" />
+            <span className="text-xs text-[#8B93A7]">{student.city}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-1.5 mb-3">
+        {student.badges.map((badge) => {
+          const color = badgeColors[badge.color] || badgeColors.green
+          return (
+            <span
+              key={badge.label}
+              className="text-xs font-semibold px-2 py-0.5 rounded-full"
+              style={{ backgroundColor: color.bg, color: color.text }}
+            >
+              {badge.label}
+            </span>
+          )
+        })}
+      </div>
+
+      {!compact && (
+        <p className="text-xs text-[#5E6677] mb-3 line-clamp-2 leading-relaxed">{student.bio}</p>
+      )}
+
+      <div className="flex flex-wrap gap-1 mb-4">
+        {student.skills.slice(0, 4).map((skill) => (
+          <span key={skill} className="text-xs px-2 py-0.5 rounded-full bg-[#F8F9FC] border border-[#E8E8E8] text-[#5E6677]">
+            {skill}
+          </span>
+        ))}
+        {student.skills.length > 4 && (
+          <span className="text-xs px-2 py-0.5 rounded-full bg-[#F8F9FC] border border-[#E8E8E8] text-[#8B93A7]">
+            +{student.skills.length - 4}
+          </span>
+        )}
+      </div>
+
+      <div className="border-t border-[#E8E8E8] pt-3 flex items-center justify-between">
+        <div className="flex items-center gap-4 text-xs text-[#8B93A7]">
+          <span><span className="font-bold text-[#1F2430]">{student.wins}</span> wins</span>
+          <span><span className="font-bold text-[#1F2430]">{student.projects}</span> projects</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          {student.github && (
+            <a href={student.github} target="_blank" rel="noopener noreferrer" className="w-6 h-6 rounded-md hover:bg-gray-100 flex items-center justify-center transition-colors">
+              <Github className="w-3.5 h-3.5 text-[#8B93A7]" />
+            </a>
+          )}
+          {student.linkedin && (
+            <a href={student.linkedin} target="_blank" rel="noopener noreferrer" className="w-6 h-6 rounded-md hover:bg-gray-100 flex items-center justify-center transition-colors">
+              <Linkedin className="w-3.5 h-3.5 text-[#8B93A7]" />
+            </a>
+          )}
+          {student.portfolio && (
+            <a href={student.portfolio} target="_blank" rel="noopener noreferrer" className="w-6 h-6 rounded-md hover:bg-gray-100 flex items-center justify-center transition-colors">
+              <Globe className="w-3.5 h-3.5 text-[#8B93A7]" />
+            </a>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  )
+}
