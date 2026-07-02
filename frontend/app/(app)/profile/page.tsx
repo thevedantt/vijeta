@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Github, Linkedin, Globe, Edit3, Trophy, Star, Users, MapPin, GraduationCap } from "lucide-react"
+import { Code2, Briefcase, Globe, Edit3, Trophy, Star, Users, MapPin, GraduationCap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { students } from "@/lib/data/students"
 import { showcases } from "@/lib/data/showcases"
@@ -75,12 +75,12 @@ export default function ProfilePage() {
               <div className="flex items-center gap-3">
                 {me.github && (
                   <a href={me.github} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl border border-[#E8E8E8] bg-white hover:bg-gray-50 flex items-center justify-center transition-colors">
-                    <Github className="w-4 h-4 text-[#5E6677]" />
+                    <Code2 className="w-4 h-4 text-[#5E6677]" />
                   </a>
                 )}
                 {me.linkedin && (
                   <a href={me.linkedin} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl border border-[#E8E8E8] bg-white hover:bg-gray-50 flex items-center justify-center transition-colors">
-                    <Linkedin className="w-4 h-4 text-[#5E6677]" />
+                    <Briefcase className="w-4 h-4 text-[#5E6677]" />
                   </a>
                 )}
                 {me.portfolio && (

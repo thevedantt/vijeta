@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { Github, ExternalLink, Eye, Heart, FileText } from "lucide-react"
+import { Code2, ExternalLink, Eye, Heart, FileText } from "lucide-react"
 import { Showcase } from "@/types"
 
 interface ShowcaseCardProps {
@@ -36,7 +36,7 @@ export function ShowcaseCard({ showcase }: ShowcaseCardProps) {
               rel="noopener noreferrer"
               className="w-7 h-7 rounded-lg bg-white/20 hover:bg-white/40 backdrop-blur-sm flex items-center justify-center transition-colors"
             >
-              <Github className="w-3.5 h-3.5 text-white" />
+              <Code2 className="w-3.5 h-3.5 text-white" />
             </a>
           )}
           {showcase.demo && (

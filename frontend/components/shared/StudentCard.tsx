@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { MapPin, Github, Linkedin, Globe, Trophy } from "lucide-react"
+import { MapPin, Code2, Briefcase, Globe, Trophy } from "lucide-react"
 import { Student } from "@/types"
 
 const badgeColors: Record<string, { bg: string; text: string }> = {
@@ -86,12 +86,12 @@ export function StudentCard({ student, compact }: StudentCardProps) {
         <div className="flex items-center gap-1.5">
           {student.github && (
             <a href={student.github} target="_blank" rel="noopener noreferrer" className="w-6 h-6 rounded-md hover:bg-gray-100 flex items-center justify-center transition-colors">
-              <Github className="w-3.5 h-3.5 text-[#8B93A7]" />
+              <Code2 className="w-3.5 h-3.5 text-[#8B93A7]" />
             </a>
           )}
           {student.linkedin && (
             <a href={student.linkedin} target="_blank" rel="noopener noreferrer" className="w-6 h-6 rounded-md hover:bg-gray-100 flex items-center justify-center transition-colors">
-              <Linkedin className="w-3.5 h-3.5 text-[#8B93A7]" />
+              <Briefcase className="w-3.5 h-3.5 text-[#8B93A7]" />
             </a>
           )}
           {student.portfolio && (

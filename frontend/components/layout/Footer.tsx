@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Zap, Github, Twitter, Linkedin, Instagram } from "lucide-react"
+import { Zap, Code2, AtSign, Briefcase, Camera } from "lucide-react"
 
 const footerLinks = {
   Product: [
@@ -26,10 +26,10 @@ const footerLinks = {
 }
 
 const socialLinks = [
-  { icon: Github, href: "#", label: "GitHub" },
-  { icon: Twitter, href: "#", label: "Twitter" },
-  { icon: Linkedin, href: "#", label: "LinkedIn" },
-  { icon: Instagram, href: "#", label: "Instagram" },
+  { icon: Code2, href: "#", label: "GitHub" },
+  { icon: AtSign, href: "#", label: "Twitter" },
+  { icon: Briefcase, href: "#", label: "LinkedIn" },
+  { icon: Camera, href: "#", label: "Instagram" },
 ]
 
 export function Footer() {

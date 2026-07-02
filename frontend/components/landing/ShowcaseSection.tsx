@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
-import { ArrowRight, Github, ExternalLink, Eye, Heart } from "lucide-react"
+import { ArrowRight, ExternalLink, Eye, Heart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { showcases } from "@/lib/data/showcases"
 
