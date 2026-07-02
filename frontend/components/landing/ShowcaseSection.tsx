@@ -12,7 +12,7 @@ export function ShowcaseSection() {
   const inView = useInView(ref, { once: true, margin: "-80px" })
 
   return (
-    <section ref={ref} className="py-24 bg-white">
+    <section ref={ref} id="showcase" className="py-24 bg-[var(--v-card)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -54,7 +54,7 @@ export function ShowcaseSection() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="absolute bottom-3 left-3">
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F6C94D] text-[#1F2430] text-xs font-semibold">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F6C94D] text-[#1F2430] dark:text-[#1F2430] text-xs font-semibold">
                     {showcase.rank}
                   </span>
                 </div>
@@ -90,7 +90,7 @@ export function ShowcaseSection() {
                           key={m.name}
                           src={m.avatar}
                           alt={m.name}
-                          className="w-7 h-7 rounded-full border-2 border-white bg-gray-100"
+                          className="w-7 h-7 rounded-full border-2 border-[var(--v-card)] bg-[var(--v-bg-secondary)]"
                         />
                       ))}
                     </div>

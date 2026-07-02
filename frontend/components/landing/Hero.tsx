@@ -94,7 +94,7 @@ export function Hero() {
               <Link href="/showcase">
                 <Button
                   variant="outline"
-                  className="h-12 px-8 rounded-[14px] border-[#E8E8E8] text-[#1F2430] text-base font-medium hover:border-[#5D7B3D] hover:text-[#5D7B3D]"
+                  className="h-12 px-8 rounded-[14px] border-[var(--v-border)] text-[var(--v-heading)] text-base font-medium hover:border-[#5D7B3D] hover:text-[#5D7B3D]"
                 >
                   Explore Winners
                 </Button>
@@ -117,7 +117,7 @@ export function Hero() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="relative hidden lg:block h-[520px]"
           >
-            <div className="absolute inset-8 rounded-3xl bg-gradient-to-br from-[#5D7B3D]/15 via-[#A7C7E4]/10 to-[#F6C94D]/10 border border-[#E8E8E8]" />
+            <div className="absolute inset-8 rounded-3xl bg-gradient-to-br from-[#5D7B3D]/15 via-[#A7C7E4]/10 to-[#F6C94D]/10 border border-[var(--v-border)]" />
 
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="relative w-72 h-72">

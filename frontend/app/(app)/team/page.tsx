@@ -1,13 +1,14 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Users, Plus, MapPin, Navigation } from "lucide-react"
+import { Users, Plus, Navigation } from "lucide-react"
 import { TeamCard } from "@/components/shared/TeamCard"
 import { StudentCard } from "@/components/shared/StudentCard"
 import { SearchBar } from "@/components/shared/SearchBar"
 import { NearbyMap } from "@/components/shared/NearbyMap"
-import { teams } from "@/lib/data/teams"
+import { CreateTeamModal } from "@/components/shared/CreateTeamModal"
+import { teams as initialTeams } from "@/lib/data/teams"
 import { students } from "@/lib/data/students"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -45,6 +46,14 @@ export default function TeamPage() {
   const [activeTab, setActiveTab] = useState(0)
   const [search, setSearch] = useState("")
   const [activeLocation, setActiveLocation] = useState<LocationKey>("all")
+  const [createOpen, setCreateOpen] = useState(false)
+  const [teamsList, setTeamsList] = useState(initialTeams)
+
+  useEffect(() => {
+    const hash = window.location.hash.replace("#", "")
+    if (hash === "find-members") setActiveTab(1)
+    else if (hash === "open-teams") setActiveTab(0)
+  }, [])
 
   const currentFilter = locationFilters.find((f) => f.key === activeLocation)!
 
@@ -55,7 +64,7 @@ export default function TeamPage() {
         s.skills.some((sk) => sk.toLowerCase().includes(search.toLowerCase())))
   )
 
-  const filteredTeams = teams.filter(
+  const filteredTeams = teamsList.filter(
     (t) =>
       t.isOpen &&
       (!search ||
@@ -81,7 +90,7 @@ export default function TeamPage() {
               <p className="text-[var(--v-muted)] text-sm">Find the perfect team or recruit great teammates.</p>
             </div>
           </div>
-          <Button className="bg-[#E4568B] hover:bg-[#cc3f79] text-white rounded-[14px] gap-2">
+          <Button onClick={() => setCreateOpen(true)} className="bg-[#E4568B] hover:bg-[#cc3f79] text-white rounded-[14px] gap-2">
             <Plus className="w-4 h-4" /> Create Team
           </Button>
         </div>
@@ -156,6 +165,12 @@ export default function TeamPage() {
           </div>
         </>
       )}
+
+      <CreateTeamModal
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        onCreate={(team) => setTeamsList((prev) => [team, ...prev])}
+      />
 
       {/* Nearby Map Tab */}
       {activeTab === 2 && (

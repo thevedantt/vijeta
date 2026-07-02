@@ -67,7 +67,7 @@ export function AISection() {
   const inView = useInView(ref, { once: true, margin: "-80px" })
 
   return (
-    <section ref={ref} className="py-24 bg-gradient-to-br from-[#EFF5FB] via-white to-[#F0F7EC]">
+    <section ref={ref} className="py-24 bg-gradient-to-br from-[var(--v-bg-secondary)] via-[var(--v-card)] to-[var(--v-bg-secondary)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -125,7 +125,7 @@ export function AISection() {
                 <Sparkles className="w-4 h-4 text-white" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-[var(--v-heading)]">Vijeta AI</p>
+                <p className="text-sm font-semibold text-[var(--v-heading)]">Margdarshak</p>
                 <div className="flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 rounded-full bg-[#5D7B3D]" />
                   <p className="text-xs text-[var(--v-muted)]">Online · Powered by Gemini</p>

@@ -63,7 +63,7 @@ export function Testimonials() {
                   <img
                     src={t.avatar}
                     alt={t.name}
-                    className="w-10 h-10 rounded-full border border-[var(--v-border)] bg-gray-100"
+                    className="w-10 h-10 rounded-full border border-[var(--v-border)] bg-[var(--v-bg-secondary)]"
                   />
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-sm text-[var(--v-heading)]">{t.name}</p>

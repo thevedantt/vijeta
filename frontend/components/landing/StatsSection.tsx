@@ -28,7 +28,7 @@ export function StatsSection() {
   const inView = useInView(ref, { once: true, margin: "-80px" })
 
   return (
-    <section ref={ref} className="py-24 bg-white">
+    <section ref={ref} className="py-24 bg-[var(--v-card)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -61,7 +61,7 @@ export function StatsSection() {
                 style={{ backgroundColor: color.bg, borderColor: color.border }}
               >
                 <div
-                  className="w-10 h-10 rounded-xl mx-auto mb-3 flex items-center justify-center bg-white shadow-sm"
+                  className="w-10 h-10 rounded-xl mx-auto mb-3 flex items-center justify-center bg-[var(--v-card)] shadow-sm"
                 >
                   {Icon && <Icon className="w-5 h-5" style={{ color: color.icon }} />}
                 </div>

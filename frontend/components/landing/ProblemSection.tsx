@@ -80,16 +80,18 @@ export function ProblemSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.4, delay: i * 0.08 }}
-              className="bg-[var(--v-card)] rounded-[18px] border border-[var(--v-border)] p-6 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-200 group"
+              className="relative bg-[var(--v-card)] rounded-[18px] border border-[var(--v-border)] p-6 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-200 group overflow-hidden"
             >
+              <div className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: problem.color }} />
               <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
+                className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
                 style={{ backgroundColor: problem.bg }}
               >
                 <problem.icon className="w-5 h-5" style={{ color: problem.color }} />
               </div>
               <h3 className="font-semibold text-[var(--v-heading)] mb-2">{problem.title}</h3>
               <p className="text-sm text-[var(--v-body)] leading-relaxed">{problem.description}</p>
+              <div className="absolute -bottom-4 -right-4 w-20 h-20 rounded-full opacity-[0.04]" style={{ backgroundColor: problem.color }} />
             </motion.div>
           ))}
         </div>

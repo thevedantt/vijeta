@@ -146,7 +146,7 @@ export default function DiscoverPage() {
           <AISuggestions />
 
           {/* Opportunities Grid */}
-          <div>
+          <div id="opportunities">
             <div className="flex items-center justify-between mb-3">
               <p className="text-sm text-[var(--v-muted)]">
                 <span className="font-semibold text-[var(--v-heading)]">{filtered.length}</span> opportunities found

@@ -20,7 +20,7 @@ export function Flywheel() {
   const inView = useInView(ref, { once: true, margin: "-80px" })
 
   return (
-    <section ref={ref} id="how-it-works" className="py-24 bg-white">
+    <section ref={ref} id="how-it-works" className="py-24 bg-[var(--v-card)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -50,7 +50,7 @@ export function Flywheel() {
                 className="relative flex flex-col items-center text-center"
               >
                 {i < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-7 left-1/2 w-full h-px bg-gradient-to-r from-[#E8E8E8] to-transparent z-0" />
+                  <div className="hidden md:block absolute top-7 left-1/2 w-full h-px bg-gradient-to-r from-[var(--v-border)] to-transparent z-0" />
                 )}
                 <motion.div
                   whileHover={{ scale: 1.05 }}
@@ -59,7 +59,7 @@ export function Flywheel() {
                 >
                   <step.icon className="w-6 h-6" style={{ color: step.color }} />
                   <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-[var(--v-card)] border border-[var(--v-border)] flex items-center justify-center">
-                    <span className="text-[9px] font-bold text-[#8B93A7]">{i + 1}</span>
+                    <span className="text-[9px] font-bold text-[var(--v-muted)]">{i + 1}</span>
                   </div>
                 </motion.div>
                 <p className="font-semibold text-sm text-[var(--v-heading)]">{step.label}</p>

@@ -1,9 +1,11 @@
 "use client"
 
 import { type ElementType } from "react"
+import Link from "next/link"
 import { motion } from "framer-motion"
-import { TrendingUp, TrendingDown, Minus } from "lucide-react"
+import { TrendingUp, TrendingDown, Minus, ArrowUpRight } from "lucide-react"
 import { AnimatedCounter } from "./AnimatedCounter"
+import { cn } from "@/lib/utils"
 
 interface StatCardProps {
   value: number
@@ -15,6 +17,8 @@ interface StatCardProps {
   trend?: "up" | "down" | "neutral"
   subtitle?: string
   index?: number
+  href?: string
+  onClick?: () => void
 }
 
 export function StatCard({
@@ -27,6 +31,8 @@ export function StatCard({
   trend,
   subtitle,
   index = 0,
+  href,
+  onClick,
 }: StatCardProps) {
   const percentage = max ? Math.round((value / max) * 100) : undefined
   const TrendIcon = trend === "up" ? TrendingUp : trend === "down" ? TrendingDown : Minus
@@ -37,15 +43,26 @@ export function StatCard({
         ? "text-[#E4568B]"
         : "text-[var(--v-muted)]"
 
-  return (
+  const card = (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.06 }}
-      className="relative bg-[var(--v-card)] rounded-[18px] border border-[var(--v-border)] p-5 shadow-card overflow-hidden group"
+      {...(onClick ? { onClick, role: "button", tabIndex: 0, onKeyDown: (e: React.KeyboardEvent) => { if (e.key === "Enter") onClick() } } : {})}
+      className={cn(
+        "relative bg-[var(--v-card)] rounded-[18px] border border-[var(--v-border)] p-5 shadow-card overflow-hidden group",
+        (href || onClick) && "cursor-pointer hover:border-[var(--v-heading)]/20 transition-colors",
+      )}
     >
       {/* Top accent bar */}
       <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ backgroundColor: color }} />
+
+      {/* Arrow indicator */}
+      {(href || onClick) && (
+        <div className="absolute top-3 right-3 w-6 h-6 rounded-lg bg-[var(--v-bg-secondary)] opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+          <ArrowUpRight className="w-3.5 h-3.5 text-[var(--v-muted)]" />
+        </div>
+      )}
 
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
@@ -58,7 +75,6 @@ export function StatCard({
           <span className="text-xs font-medium text-[var(--v-muted)]">{label}</span>
         </div>
 
-        {/* Ring indicator on the right */}
         {percentage !== undefined && (
           <svg className="w-8 h-8 -rotate-90 flex-shrink-0" viewBox="0 0 36 36">
             <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--v-border)" strokeWidth="2.5" />
@@ -72,7 +88,6 @@ export function StatCard({
         )}
       </div>
 
-      {/* Number */}
       <div className="flex items-baseline gap-1.5">
         <span className="text-3xl font-bold text-[var(--v-heading)] tabular-nums tracking-tight">
           <AnimatedCounter end={value} />
@@ -82,7 +97,6 @@ export function StatCard({
         )}
       </div>
 
-      {/* Bottom row: trend + context */}
       {(trend || context || percentage !== undefined) && (
         <div className="flex items-center justify-between mt-3 pt-3 border-t border-[var(--v-border)]">
           <div className="flex items-center gap-1.5">
@@ -98,4 +112,10 @@ export function StatCard({
       )}
     </motion.div>
   )
+
+  if (href) {
+    return <Link href={href}>{card}</Link>
+  }
+
+  return card
 }
