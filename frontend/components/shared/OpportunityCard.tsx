@@ -51,7 +51,7 @@ export function OpportunityCard({ opportunity: opp, compact }: OpportunityCardPr
     <motion.div
       whileHover={{ y: -2 }}
       transition={{ duration: 0.15 }}
-      className="bg-white rounded-[18px] border border-[#E8E8E8] p-5 shadow-card hover:shadow-card-hover transition-all duration-200 flex flex-col group"
+      className="bg-[var(--v-card)] rounded-[18px] border border-[var(--v-border)] p-5 shadow-card hover:shadow-card-hover transition-all duration-200 flex flex-col group"
     >
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-center gap-2 flex-wrap">
@@ -67,31 +67,31 @@ export function OpportunityCard({ opportunity: opp, compact }: OpportunityCardPr
             </span>
           )}
         </div>
-        <button className="w-7 h-7 rounded-lg hover:bg-gray-100 flex items-center justify-center transition-colors flex-shrink-0">
+        <button className="w-7 h-7 rounded-lg hover-bg-v-hover flex items-center justify-center transition-colors flex-shrink-0">
           <Bookmark className="w-3.5 h-3.5 text-[#8B93A7]" />
         </button>
       </div>
 
-      <h3 className="font-bold text-[#1F2430] mb-1 leading-snug line-clamp-2 group-hover:text-[#5D7B3D] transition-colors">
+      <h3 className="font-bold text-[var(--v-heading)] mb-1 leading-snug line-clamp-2 group-hover:text-[#5D7B3D] transition-colors">
         {opp.title}
       </h3>
-      <p className="text-xs text-[#8B93A7] mb-3">{opp.organizer}</p>
+      <p className="text-xs text-[var(--v-muted)] mb-3">{opp.organizer}</p>
 
       {!compact && (
-        <p className="text-sm text-[#5E6677] mb-4 line-clamp-2 leading-relaxed flex-1">
+        <p className="text-sm text-[var(--v-body)] mb-4 line-clamp-2 leading-relaxed flex-1">
           {opp.description}
         </p>
       )}
 
       <div className="flex flex-wrap gap-1.5 mb-4">
         {opp.tags.slice(0, 3).map((tag) => (
-          <span key={tag} className="px-2 py-0.5 rounded-full bg-[#F8F9FC] border border-[#E8E8E8] text-xs text-[#5E6677]">
+          <span key={tag} className="px-2 py-0.5 rounded-full bg-[var(--v-bg-secondary)] border border-[var(--v-border)] text-xs text-[var(--v-body)]">
             {tag}
           </span>
         ))}
       </div>
 
-      <div className="grid grid-cols-2 gap-x-3 gap-y-2 mb-4 text-xs text-[#8B93A7]">
+      <div className="grid grid-cols-2 gap-x-3 gap-y-2 mb-4 text-xs text-[var(--v-muted)]">
         <div className="flex items-center gap-1.5">
           <Calendar className={cn("w-3.5 h-3.5", isUrgent ? "text-[#E4568B]" : "")} />
           <span className={cn(isUrgent ? "text-[#E4568B] font-semibold" : "")}>{deadlineText}</span>
@@ -110,10 +110,10 @@ export function OpportunityCard({ opportunity: opp, compact }: OpportunityCardPr
         </div>
       </div>
 
-      <div className="flex items-center justify-between pt-3 border-t border-[#E8E8E8]">
+      <div className="flex items-center justify-between pt-3 border-t border-[var(--v-border)]">
         <div>
-          <p className="text-sm font-bold text-[#1F2430]">{opp.prize}</p>
-          <p className="text-xs text-[#8B93A7]">{opp.applicants.toLocaleString()} applicants</p>
+          <p className="text-sm font-bold text-[var(--v-heading)]">{opp.prize}</p>
+          <p className="text-xs text-[var(--v-muted)]">{opp.applicants.toLocaleString()} applicants</p>
         </div>
         <Link href={`/opportunity/${opp.id}`}>
           <Button

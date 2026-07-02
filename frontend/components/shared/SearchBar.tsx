@@ -25,20 +25,20 @@ export function SearchBar({ placeholder = "Search...", onSearch, className }: Se
 
   return (
     <div className={cn("relative flex items-center", className)}>
-      <Search className="absolute left-4 w-4 h-4 text-[#8B93A7] pointer-events-none" />
+      <Search className="absolute left-4 w-4 h-4 text-[var(--v-muted)] pointer-events-none" />
       <input
         type="text"
         value={query}
         onChange={handleChange}
         placeholder={placeholder}
-        className="w-full h-11 pl-11 pr-10 rounded-xl border border-[#E8E8E8] bg-white text-sm text-[#1F2430] placeholder:text-[#8B93A7] outline-none focus:border-[#5D7B3D] focus:ring-2 focus:ring-[#5D7B3D]/10 transition-all"
+        className="w-full h-11 pl-11 pr-10 rounded-xl border border-[var(--v-border)] bg-[var(--v-card)] text-sm text-[var(--v-heading)] placeholder:text-[var(--v-muted)] outline-none focus:border-[#5D7B3D] focus:ring-2 focus:ring-[#5D7B3D]/10 transition-all"
       />
       {query && (
         <button
           onClick={handleClear}
-          className="absolute right-3 w-5 h-5 rounded-full bg-[#E8E8E8] hover:bg-gray-300 flex items-center justify-center transition-colors"
+          className="absolute right-3 w-5 h-5 rounded-full bg-[var(--v-border)] hover-bg-v-hover flex items-center justify-center transition-colors"
         >
-          <X className="w-3 h-3 text-[#5E6677]" />
+          <X className="w-3 h-3 text-[var(--v-body)]" />
         </button>
       )}
     </div>

@@ -12,7 +12,7 @@ export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
 
   return (
-    <section ref={ref} id="faq" className="py-24 bg-[#F8F9FC]">
+    <section ref={ref} id="faq" className="py-24 bg-[var(--v-bg-secondary)]">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -22,7 +22,7 @@ export function FAQ() {
           <span className="text-sm font-medium text-[#5D7B3D] uppercase tracking-widest mb-3 block">
             FAQ
           </span>
-          <h2 className="text-4xl font-bold text-[#1F2430] mb-4">
+          <h2 className="text-4xl font-bold text-[var(--v-heading)] mb-4">
             Questions? We have answers.
           </h2>
         </motion.div>
@@ -35,8 +35,8 @@ export function FAQ() {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: i * 0.07 }}
               className={cn(
-                "bg-white rounded-[18px] border transition-all duration-200",
-                openIndex === i ? "border-[#5D7B3D]/30 shadow-card" : "border-[#E8E8E8]"
+                "bg-[var(--v-card)] rounded-[18px] border transition-all duration-200",
+                openIndex === i ? "border-[#5D7B3D]/30 shadow-card" : "border-[var(--v-border)]"
               )}
             >
               <button
@@ -45,14 +45,14 @@ export function FAQ() {
               >
                 <span className={cn(
                   "font-medium text-sm leading-snug pr-4 transition-colors",
-                  openIndex === i ? "text-[#5D7B3D]" : "text-[#1F2430]"
+                  openIndex === i ? "text-[#5D7B3D]" : "text-[var(--v-heading)]"
                 )}>
                   {faq.question}
                 </span>
                 <ChevronDown
                   className={cn(
                     "w-4 h-4 flex-shrink-0 transition-transform duration-200",
-                    openIndex === i ? "rotate-180 text-[#5D7B3D]" : "text-[#8B93A7]"
+                    openIndex === i ? "rotate-180 text-[#5D7B3D]" : "text-[var(--v-muted)]"
                   )}
                 />
               </button>
@@ -65,7 +65,7 @@ export function FAQ() {
                   transition={{ duration: 0.2 }}
                   className="px-6 pb-5"
                 >
-                  <p className="text-sm text-[#5E6677] leading-relaxed border-t border-[#E8E8E8] pt-4">
+                  <p className="text-sm text-[var(--v-body)] leading-relaxed border-t border-[var(--v-border)] pt-4">
                     {faq.answer}
                   </p>
                 </motion.div>

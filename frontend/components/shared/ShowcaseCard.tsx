@@ -14,7 +14,7 @@ export function ShowcaseCard({ showcase }: ShowcaseCardProps) {
     <motion.div
       whileHover={{ y: -3 }}
       transition={{ duration: 0.15 }}
-      className="bg-white rounded-[18px] border border-[#E8E8E8] overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-200 group"
+      className="bg-[var(--v-card)] rounded-[18px] border border-[var(--v-border)] overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-200 group"
     >
       <div className="relative h-48 overflow-hidden">
         <img
@@ -63,28 +63,28 @@ export function ShowcaseCard({ showcase }: ShowcaseCardProps) {
       </div>
 
       <div className="p-5">
-        <h3 className="font-bold text-[#1F2430] mb-1 leading-snug line-clamp-2 group-hover:text-[#5D7B3D] transition-colors">
+        <h3 className="font-bold text-[var(--v-heading)] mb-1 leading-snug line-clamp-2 group-hover:text-[#5D7B3D] transition-colors">
           {showcase.title}
         </h3>
-        <p className="text-xs text-[#8B93A7] mb-3">{showcase.competition} · {showcase.year}</p>
-        <p className="text-sm text-[#5E6677] mb-4 line-clamp-2 leading-relaxed">
+        <p className="text-xs text-[var(--v-muted)] mb-3">{showcase.competition} · {showcase.year}</p>
+        <p className="text-sm text-[var(--v-body)] mb-4 line-clamp-2 leading-relaxed">
           {showcase.description}
         </p>
 
         <div className="flex flex-wrap gap-1.5 mb-4">
           {showcase.techStack.slice(0, 3).map((tech) => (
-            <span key={tech} className="px-2 py-0.5 rounded-full bg-[#F8F9FC] border border-[#E8E8E8] text-xs text-[#5E6677]">
+            <span key={tech} className="px-2 py-0.5 rounded-full bg-[var(--v-bg-secondary)] border border-[var(--v-border)] text-xs text-[var(--v-body)]">
               {tech}
             </span>
           ))}
           {showcase.techStack.length > 3 && (
-            <span className="px-2 py-0.5 rounded-full bg-[#F8F9FC] border border-[#E8E8E8] text-xs text-[#8B93A7]">
+            <span className="px-2 py-0.5 rounded-full bg-[var(--v-bg-secondary)] border border-[var(--v-border)] text-xs text-[var(--v-muted)]">
               +{showcase.techStack.length - 3}
             </span>
           )}
         </div>
 
-        <div className="flex items-center justify-between pt-3 border-t border-[#E8E8E8]">
+        <div className="flex items-center justify-between pt-3 border-t border-[var(--v-border)]">
           <div className="flex items-center gap-2">
             <div className="flex -space-x-2">
               {showcase.members.slice(0, 3).map((m) => (
@@ -92,13 +92,13 @@ export function ShowcaseCard({ showcase }: ShowcaseCardProps) {
                   key={m.name}
                   src={m.avatar}
                   alt={m.name}
-                  className="w-6 h-6 rounded-full border-2 border-white bg-gray-100"
+                  className="w-6 h-6 rounded-full border-2 border-[var(--v-card)] bg-[var(--v-bg-secondary)]"
                 />
               ))}
             </div>
-            <span className="text-xs text-[#8B93A7]">{showcase.team}</span>
+            <span className="text-xs text-[var(--v-muted)]">{showcase.team}</span>
           </div>
-          <div className="flex items-center gap-3 text-xs text-[#8B93A7]">
+          <div className="flex items-center gap-3 text-xs text-[var(--v-muted)]">
             <span className="flex items-center gap-1">
               <Eye className="w-3 h-3" />
               {(showcase.views / 1000).toFixed(1)}k

@@ -38,10 +38,10 @@ export function StatsSection() {
           <span className="text-sm font-medium text-[#5D7B3D] uppercase tracking-widest mb-3 block">
             Community
           </span>
-          <h2 className="text-4xl font-bold text-[#1F2430] mb-4">
+          <h2 className="text-4xl font-bold text-[var(--v-heading)] mb-4">
             A growing community of winners
           </h2>
-          <p className="text-lg text-[#5E6677] max-w-xl mx-auto">
+          <p className="text-lg text-[var(--v-body)] max-w-xl mx-auto">
             Join thousands of ambitious students building their future on Vijeta.
           </p>
         </motion.div>
@@ -65,11 +65,11 @@ export function StatsSection() {
                 >
                   {Icon && <Icon className="w-5 h-5" style={{ color: color.icon }} />}
                 </div>
-                <p className="text-2xl font-bold text-[#1F2430] mb-0.5">
+                <p className="text-2xl font-bold text-[var(--v-heading)] mb-0.5">
                   {stat.value}{stat.suffix}
                 </p>
-                <p className="text-xs font-semibold text-[#5E6677]">{stat.label}</p>
-                <p className="text-xs text-[#8B93A7] mt-1 leading-snug">{stat.description}</p>
+                <p className="text-xs font-semibold text-[var(--v-body)]">{stat.label}</p>
+                <p className="text-xs text-[var(--v-muted)] mt-1 leading-snug">{stat.description}</p>
               </motion.div>
             )
           })}

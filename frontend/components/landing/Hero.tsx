@@ -48,7 +48,7 @@ const stats = [
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-[#F8F9FC] via-white to-[#F0F7EC]">
+    <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-[var(--v-bg-secondary)] via-[var(--v-card)] to-[#F0F7EC]">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-[#5D7B3D]/8 to-[#A7C7E4]/8 blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-[#F6C94D]/6 to-[#E4568B]/6 blur-3xl" />
@@ -73,13 +73,13 @@ export function Hero() {
               </span>
             </motion.div>
 
-            <h1 className="text-5xl sm:text-6xl font-bold text-[#1F2430] leading-[1.1] tracking-tight mb-6">
+              <h1 className="text-5xl sm:text-6xl font-bold text-[var(--v-heading)] leading-[1.1] tracking-tight mb-6">
               Become the student{" "}
               <span className="text-[#5D7B3D]">everyone</span>{" "}
               remembers.
             </h1>
 
-            <p className="text-xl text-[#5E6677] leading-relaxed mb-8 max-w-lg">
+            <p className="text-xl text-[var(--v-body)] leading-relaxed mb-8 max-w-lg">
               Discover opportunities. Build with great teammates.
               Win competitions. Guide the next generation.
             </p>
@@ -104,8 +104,8 @@ export function Hero() {
             <div className="flex items-center gap-8">
               {stats.map((stat) => (
                 <div key={stat.label}>
-                  <p className="text-2xl font-bold text-[#1F2430]">{stat.value}</p>
-                  <p className="text-sm text-[#8B93A7]">{stat.label}</p>
+                  <p className="text-2xl font-bold text-[var(--v-heading)]">{stat.value}</p>
+                  <p className="text-sm text-[var(--v-muted)]">{stat.label}</p>
                 </div>
               ))}
             </div>
@@ -125,7 +125,7 @@ export function Hero() {
                 <div className="absolute inset-8 rounded-full border-2 border-dashed border-[#A7C7E4]/30 animate-spin" style={{ animationDuration: "15s", animationDirection: "reverse" }} />
 
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-24 h-24 rounded-2xl bg-white shadow-card border border-[#E8E8E8] flex items-center justify-center">
+                  <div className="w-24 h-24 rounded-2xl bg-[var(--v-card)] shadow-card border border-[var(--v-border)] flex items-center justify-center">
                     <div className="text-4xl font-bold text-[#5D7B3D]">V</div>
                   </div>
                 </div>
@@ -146,7 +146,7 @@ export function Hero() {
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.5 + i * 0.1 }}
                       style={{ left: `${x}%`, top: `${y}%`, transform: "translate(-50%, -50%)" }}
-                      className="absolute w-12 h-12 rounded-xl bg-white shadow-card border border-[#E8E8E8] flex items-center justify-center text-xl"
+                      className="absolute w-12 h-12 rounded-xl bg-[var(--v-card)] shadow-card border border-[var(--v-border)] flex items-center justify-center text-xl"
                     >
                       {node.icon}
                     </motion.div>
@@ -161,7 +161,7 @@ export function Hero() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6 + i * 0.15, duration: 0.5 }}
-                className={`absolute ${card.pos} bg-white rounded-2xl border border-[#E8E8E8] shadow-card px-4 py-3 flex items-center gap-3`}
+                className={`absolute ${card.pos} bg-[var(--v-card)] rounded-2xl border border-[var(--v-border)] shadow-card px-4 py-3 flex items-center gap-3`}
               >
                 <div
                   className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
@@ -170,8 +170,8 @@ export function Hero() {
                   <card.icon className="w-4 h-4" style={{ color: card.iconColor }} />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-[#1F2430]">{card.label}</p>
-                  <p className="text-xs text-[#8B93A7]">{card.sub}</p>
+                  <p className="text-xs font-semibold text-[var(--v-heading)]">{card.label}</p>
+                  <p className="text-xs text-[var(--v-muted)]">{card.sub}</p>
                 </div>
               </motion.div>
             ))}

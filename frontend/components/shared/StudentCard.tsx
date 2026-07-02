@@ -21,14 +21,14 @@ export function StudentCard({ student, compact }: StudentCardProps) {
     <motion.div
       whileHover={{ y: -2 }}
       transition={{ duration: 0.15 }}
-      className="bg-white rounded-[18px] border border-[#E8E8E8] p-5 shadow-card hover:shadow-card-hover transition-all duration-200"
+      className="bg-[var(--v-card)] rounded-[18px] border border-[var(--v-border)] p-5 shadow-card hover:shadow-card-hover transition-all duration-200"
     >
       <div className="flex items-start gap-4 mb-4">
         <div className="relative flex-shrink-0">
           <img
             src={student.avatar}
             alt={student.name}
-            className="w-12 h-12 rounded-2xl border border-[#E8E8E8] bg-gray-100"
+            className="w-12 h-12 rounded-2xl border border-[var(--v-border)] bg-[var(--v-bg-secondary)]"
           />
           {student.wins > 0 && (
             <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#F6C94D] flex items-center justify-center">
@@ -37,11 +37,11 @@ export function StudentCard({ student, compact }: StudentCardProps) {
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-bold text-sm text-[#1F2430] truncate">{student.name}</p>
-          <p className="text-xs text-[#8B93A7] truncate">{student.college}</p>
+          <p className="font-bold text-sm text-[var(--v-heading)] truncate">{student.name}</p>
+          <p className="text-xs text-[var(--v-muted)] truncate">{student.college}</p>
           <div className="flex items-center gap-1 mt-1">
-            <MapPin className="w-3 h-3 text-[#8B93A7]" />
-            <span className="text-xs text-[#8B93A7]">{student.city}</span>
+            <MapPin className="w-3 h-3 text-[var(--v-muted)]" />
+            <span className="text-xs text-[var(--v-muted)]">{student.city}</span>
           </div>
         </div>
       </div>
@@ -62,41 +62,41 @@ export function StudentCard({ student, compact }: StudentCardProps) {
       </div>
 
       {!compact && (
-        <p className="text-xs text-[#5E6677] mb-3 line-clamp-2 leading-relaxed">{student.bio}</p>
+        <p className="text-xs text-[var(--v-body)] mb-3 line-clamp-2 leading-relaxed">{student.bio}</p>
       )}
 
       <div className="flex flex-wrap gap-1 mb-4">
         {student.skills.slice(0, 4).map((skill) => (
-          <span key={skill} className="text-xs px-2 py-0.5 rounded-full bg-[#F8F9FC] border border-[#E8E8E8] text-[#5E6677]">
+          <span key={skill} className="text-xs px-2 py-0.5 rounded-full bg-[var(--v-bg-secondary)] border border-[var(--v-border)] text-[var(--v-body)]">
             {skill}
           </span>
         ))}
         {student.skills.length > 4 && (
-          <span className="text-xs px-2 py-0.5 rounded-full bg-[#F8F9FC] border border-[#E8E8E8] text-[#8B93A7]">
+          <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--v-bg-secondary)] border border-[var(--v-border)] text-[var(--v-muted)]">
             +{student.skills.length - 4}
           </span>
         )}
       </div>
 
-      <div className="border-t border-[#E8E8E8] pt-3 flex items-center justify-between">
-        <div className="flex items-center gap-4 text-xs text-[#8B93A7]">
-          <span><span className="font-bold text-[#1F2430]">{student.wins}</span> wins</span>
-          <span><span className="font-bold text-[#1F2430]">{student.projects}</span> projects</span>
+      <div className="border-t border-[var(--v-border)] pt-3 flex items-center justify-between">
+        <div className="flex items-center gap-4 text-xs text-[var(--v-muted)]">
+          <span><span className="font-bold text-[var(--v-heading)]">{student.wins}</span> wins</span>
+          <span><span className="font-bold text-[var(--v-heading)]">{student.projects}</span> projects</span>
         </div>
         <div className="flex items-center gap-1.5">
           {student.github && (
-            <a href={student.github} target="_blank" rel="noopener noreferrer" className="w-6 h-6 rounded-md hover:bg-gray-100 flex items-center justify-center transition-colors">
-              <Code2 className="w-3.5 h-3.5 text-[#8B93A7]" />
+            <a href={student.github} target="_blank" rel="noopener noreferrer" className="w-6 h-6 rounded-md hover-bg-v-hover flex items-center justify-center transition-colors">
+              <Code2 className="w-3.5 h-3.5 text-[var(--v-muted)]" />
             </a>
           )}
           {student.linkedin && (
-            <a href={student.linkedin} target="_blank" rel="noopener noreferrer" className="w-6 h-6 rounded-md hover:bg-gray-100 flex items-center justify-center transition-colors">
-              <Briefcase className="w-3.5 h-3.5 text-[#8B93A7]" />
+            <a href={student.linkedin} target="_blank" rel="noopener noreferrer" className="w-6 h-6 rounded-md hover-bg-v-hover flex items-center justify-center transition-colors">
+              <Briefcase className="w-3.5 h-3.5 text-[var(--v-muted)]" />
             </a>
           )}
           {student.portfolio && (
-            <a href={student.portfolio} target="_blank" rel="noopener noreferrer" className="w-6 h-6 rounded-md hover:bg-gray-100 flex items-center justify-center transition-colors">
-              <Globe className="w-3.5 h-3.5 text-[#8B93A7]" />
+            <a href={student.portfolio} target="_blank" rel="noopener noreferrer" className="w-6 h-6 rounded-md hover-bg-v-hover flex items-center justify-center transition-colors">
+              <Globe className="w-3.5 h-3.5 text-[var(--v-muted)]" />
             </a>
           )}
         </div>

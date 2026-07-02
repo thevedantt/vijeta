@@ -21,6 +21,8 @@ export const opportunities: Opportunity[] = [
     location: "Pan India",
     isRemote: false,
     applicants: 1200,
+    lat: 22.5937,
+    lng: 78.9629,
   },
   {
     id: "o2",
@@ -42,6 +44,8 @@ export const opportunities: Opportunity[] = [
     location: "Global (Remote)",
     isRemote: true,
     applicants: 450,
+    lat: 28.6139,
+    lng: 77.209,
   },
   {
     id: "o3",
@@ -59,6 +63,8 @@ export const opportunities: Opportunity[] = [
     location: "Pan India",
     isRemote: false,
     applicants: 890,
+    lat: 22.5937,
+    lng: 78.9629,
   },
   {
     id: "o4",
@@ -81,6 +87,8 @@ export const opportunities: Opportunity[] = [
     location: "Pan India",
     isRemote: false,
     applicants: 3200,
+    lat: 22.5937,
+    lng: 78.9629,
   },
   {
     id: "o5",
@@ -103,6 +111,8 @@ export const opportunities: Opportunity[] = [
     location: "Global (Remote)",
     isRemote: true,
     applicants: 670,
+    lat: 28.6139,
+    lng: 77.209,
   },
   {
     id: "o6",
@@ -120,6 +130,8 @@ export const opportunities: Opportunity[] = [
     location: "Prayagraj",
     isRemote: false,
     applicants: 820,
+    lat: 25.4358,
+    lng: 81.8463,
   },
   {
     id: "o7",
@@ -141,6 +153,8 @@ export const opportunities: Opportunity[] = [
     location: "Pan India",
     isRemote: true,
     applicants: 340,
+    lat: 22.5937,
+    lng: 78.9629,
   },
   {
     id: "o8",
@@ -162,6 +176,8 @@ export const opportunities: Opportunity[] = [
     location: "Pan India",
     isRemote: false,
     applicants: 2100,
+    lat: 22.5937,
+    lng: 78.9629,
   },
   {
     id: "o9",
@@ -179,6 +195,8 @@ export const opportunities: Opportunity[] = [
     location: "Pan India",
     isRemote: true,
     applicants: 580,
+    lat: 22.5937,
+    lng: 78.9629,
   },
   {
     id: "o10",
@@ -200,6 +218,8 @@ export const opportunities: Opportunity[] = [
     location: "Pan India",
     isRemote: true,
     applicants: 1100,
+    lat: 22.5937,
+    lng: 78.9629,
   },
   {
     id: "o11",
@@ -217,6 +237,8 @@ export const opportunities: Opportunity[] = [
     location: "Mumbai",
     isRemote: false,
     applicants: 1500,
+    lat: 19.076,
+    lng: 72.8777,
   },
   {
     id: "o12",
@@ -238,5 +260,7 @@ export const opportunities: Opportunity[] = [
     location: "Pan India",
     isRemote: true,
     applicants: 760,
+    lat: 22.5937,
+    lng: 78.9629,
   },
 ]

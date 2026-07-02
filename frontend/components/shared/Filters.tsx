@@ -35,7 +35,7 @@ export function Filters({ filters, onFilterChange, className }: FiltersProps) {
     <div className={cn("space-y-4", className)}>
       {filters.map((filter) => (
         <div key={filter.key}>
-          <p className="text-xs font-semibold text-[#8B93A7] uppercase tracking-wider mb-2">
+          <p className="text-xs font-semibold text-[var(--v-muted)] uppercase tracking-wider mb-2">
             {filter.label}
           </p>
           <div className="flex flex-wrap gap-2">
@@ -49,7 +49,7 @@ export function Filters({ filters, onFilterChange, className }: FiltersProps) {
                     "px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-150",
                     isActive
                       ? "bg-[#5D7B3D] border-[#5D7B3D] text-white"
-                      : "bg-white border-[#E8E8E8] text-[#5E6677] hover:border-[#5D7B3D] hover:text-[#5D7B3D]"
+                      : "bg-[var(--v-bg-secondary)] border-[var(--v-border)] text-[var(--v-body)] hover:border-[#5D7B3D] hover:text-[#5D7B3D]"
                   )}
                 >
                   {opt.label}

@@ -7,9 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-geist-sans);
+  --font-sans: "Poppins", sans-serif;
+  --font-mono: "Poppins", monospace;
+  --font-heading: "Poppins", sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -53,23 +53,46 @@
   --color-vijeta-yellow: var(--vijeta-yellow);
   --color-vijeta-pink: var(--vijeta-pink);
   --color-vijeta-blue: var(--vijeta-blue);
-  --color-vijeta-heading: var(--vijeta-heading);
-  --color-vijeta-body: var(--vijeta-body);
-  --color-vijeta-muted: var(--vijeta-muted);
-  --color-vijeta-border: var(--vijeta-border);
+  --color-vijeta-heading: var(--v-heading);
+  --color-vijeta-body: var(--v-body);
+  --color-vijeta-muted: var(--v-muted);
+  --color-vijeta-border: var(--v-border);
+  --color-v-card: var(--v-card);
+  --color-v-bg-secondary: var(--v-bg-secondary);
 }
 
 :root {
-  /* Vijeta brand colors */
+  /* Vijeta brand colors (unchanged across themes) */
   --vijeta-green: #5D7B3D;
   --vijeta-green-dark: #4a6230;
   --vijeta-yellow: #F6C94D;
   --vijeta-pink: #E4568B;
   --vijeta-blue: #A7C7E4;
-  --vijeta-heading: #1F2430;
-  --vijeta-body: #5E6677;
-  --vijeta-muted: #8B93A7;
-  --vijeta-border: #E8E8E8;
+  --vijeta-blue-dark: #4A90C0;
+  --vijeta-pink-hover: #CC3F79;
+  --vijeta-yellow-text: #B8922C;
+
+  /* Vijeta neutral colors (change in dark mode) */
+  --v-bg: #FAFAFA;
+  --v-bg-secondary: #F8F9FC;
+  --v-card: #FFFFFF;
+  --v-card-hover: #F9FAFB;
+  --v-border: #E8E8E8;
+  --v-heading: #1F2430;
+  --v-body: #5E6677;
+  --v-muted: #8B93A7;
+
+  /* Tints derived from brand (unchanged) */
+  --v-green-10: color-mix(in srgb, #5D7B3D 10%, transparent);
+  --v-green-15: color-mix(in srgb, #5D7B3D 15%, transparent);
+  --v-green-20: color-mix(in srgb, #5D7B3D 20%, transparent);
+  --v-yellow-10: color-mix(in srgb, #F6C94D 10%, transparent);
+  --v-yellow-15: color-mix(in srgb, #F6C94D 15%, transparent);
+  --v-yellow-20: color-mix(in srgb, #F6C94D 20%, transparent);
+  --v-pink-10: color-mix(in srgb, #E4568B 10%, transparent);
+  --v-pink-15: color-mix(in srgb, #E4568B 15%, transparent);
+  --v-blue-20: color-mix(in srgb, #A7C7E4 20%, transparent);
+  --v-blue-30: color-mix(in srgb, #A7C7E4 30%, transparent);
 
   /* Shadcn override to Vijeta green */
   --background: oklch(0.987 0 0);
@@ -106,6 +129,44 @@
   --sidebar-ring: oklch(0.47 0.107 131);
 }
 
+.dark {
+  --v-bg: #09090B;
+  --v-bg-secondary: #111113;
+  --v-card: #18181B;
+  --v-card-hover: #202024;
+  --v-border: #2A2A2E;
+  --v-heading: #FAFAFA;
+  --v-body: #D4D4D8;
+  --v-muted: #A1A1AA;
+
+  --background: oklch(0.05 0 0);
+  --foreground: oklch(0.95 0 0);
+  --card: oklch(0.1 0 0);
+  --card-foreground: oklch(0.95 0 0);
+  --popover: oklch(0.1 0 0);
+  --popover-foreground: oklch(0.95 0 0);
+  --primary: oklch(0.47 0.107 131);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.12 0 0);
+  --secondary-foreground: oklch(0.9 0 0);
+  --muted: oklch(0.1 0 0);
+  --muted-foreground: oklch(0.6 0 0);
+  --accent: oklch(0.12 0 0);
+  --accent-foreground: oklch(0.9 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.18 0 0);
+  --input: oklch(0.18 0 0);
+  --ring: oklch(0.47 0.107 131);
+  --sidebar: oklch(0.08 0 0);
+  --sidebar-foreground: oklch(0.9 0 0);
+  --sidebar-primary: oklch(0.47 0.107 131);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.12 0 0);
+  --sidebar-accent-foreground: oklch(0.9 0 0);
+  --sidebar-border: oklch(0.15 0 0);
+  --sidebar-ring: oklch(0.47 0.107 131);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -131,20 +192,31 @@
   .text-vijeta-yellow { color: var(--vijeta-yellow); }
   .text-vijeta-pink { color: var(--vijeta-pink); }
   .text-vijeta-blue { color: var(--vijeta-blue); }
-  .text-vijeta-heading { color: var(--vijeta-heading); }
-  .text-vijeta-body { color: var(--vijeta-body); }
-  .text-vijeta-muted { color: var(--vijeta-muted); }
+  .text-v-heading { color: var(--v-heading); }
+  .text-v-body { color: var(--v-body); }
+  .text-v-muted { color: var(--v-muted); }
+  .bg-v-page { background-color: var(--v-bg); }
+  .bg-v-secondary { background-color: var(--v-bg-secondary); }
+  .bg-v-card { background-color: var(--v-card); }
   .bg-vijeta-green { background-color: var(--vijeta-green); }
   .bg-vijeta-yellow { background-color: var(--vijeta-yellow); }
   .bg-vijeta-pink { background-color: var(--vijeta-pink); }
   .bg-vijeta-blue { background-color: var(--vijeta-blue); }
-  .bg-vijeta-green\/10 { background-color: color-mix(in srgb, var(--vijeta-green) 10%, transparent); }
-  .bg-vijeta-yellow\/10 { background-color: color-mix(in srgb, var(--vijeta-yellow) 10%, transparent); }
-  .bg-vijeta-pink\/10 { background-color: color-mix(in srgb, var(--vijeta-pink) 10%, transparent); }
-  .bg-vijeta-blue\/10 { background-color: color-mix(in srgb, var(--vijeta-blue) 10%, transparent); }
-  .bg-vijeta-green\/20 { background-color: color-mix(in srgb, var(--vijeta-green) 20%, transparent); }
+  .bg-vijeta-green\/10 { background-color: var(--v-green-10); }
+  .bg-vijeta-green\/15 { background-color: var(--v-green-15); }
+  .bg-vijeta-green\/20 { background-color: var(--v-green-20); }
+  .bg-vijeta-yellow\/10 { background-color: var(--v-yellow-10); }
+  .bg-vijeta-yellow\/15 { background-color: var(--v-yellow-15); }
+  .bg-vijeta-yellow\/20 { background-color: var(--v-yellow-20); }
+  .bg-vijeta-pink\/10 { background-color: var(--v-pink-10); }
+  .bg-vijeta-pink\/15 { background-color: var(--v-pink-15); }
+  .bg-vijeta-blue\/20 { background-color: var(--v-blue-20); }
+  .bg-vijeta-blue\/30 { background-color: var(--v-blue-30); }
+  .border-v-border { border-color: var(--v-border); }
   .border-vijeta-green { border-color: var(--vijeta-green); }
-  .border-vijeta-border { border-color: var(--vijeta-border); }
+  .hover-bg-v-hover:hover { background-color: var(--v-card-hover); }
   .shadow-card { box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05); }
   .shadow-card-hover { box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08); }
+  .dark .shadow-card { box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); }
+  .dark .shadow-card-hover { box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4); }
 }

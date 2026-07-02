@@ -77,11 +77,11 @@ export function AISection() {
           <span className="text-sm font-medium text-[#4a90c0] uppercase tracking-widest mb-3 block">
             AI-Powered
           </span>
-          <h2 className="text-4xl font-bold text-[#1F2430] mb-4 flex items-center justify-center gap-3">
+          <h2 className="text-4xl font-bold text-[var(--v-heading)] mb-4 flex items-center justify-center gap-3">
             <Sparkles className="w-8 h-8 text-[#A7C7E4]" />
             Meet your AI teammate
           </h2>
-          <p className="text-lg text-[#5E6677] max-w-2xl mx-auto">
+          <p className="text-lg text-[var(--v-body)] max-w-2xl mx-auto">
             Available 24/7 to guide you through every step — from finding the right competition to submitting a winning project.
           </p>
         </motion.div>
@@ -99,7 +99,7 @@ export function AISection() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: i * 0.07 }}
-                  className="bg-white rounded-[18px] border border-[#E8E8E8] p-5 shadow-card hover:shadow-card-hover transition-shadow group hover:-translate-y-0.5 duration-200"
+                  className="bg-[var(--v-card)] rounded-[18px] border border-[var(--v-border)] p-5 shadow-card hover:shadow-card-hover transition-shadow group hover:-translate-y-0.5 duration-200"
                 >
                   <div
                     className="w-9 h-9 rounded-xl flex items-center justify-center mb-3"
@@ -107,8 +107,8 @@ export function AISection() {
                   >
                     <feature.icon className="w-4 h-4" style={{ color: feature.color }} />
                   </div>
-                  <h4 className="font-semibold text-sm text-[#1F2430] mb-1">{feature.title}</h4>
-                  <p className="text-xs text-[#5E6677] leading-relaxed">{feature.description}</p>
+                  <h4 className="font-semibold text-sm text-[var(--v-heading)] mb-1">{feature.title}</h4>
+                  <p className="text-xs text-[var(--v-body)] leading-relaxed">{feature.description}</p>
                 </motion.div>
               ))}
             </div>
@@ -118,17 +118,17 @@ export function AISection() {
             initial={{ opacity: 0, x: 20 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6 }}
-            className="bg-white rounded-[24px] border border-[#E8E8E8] shadow-card overflow-hidden"
+            className="bg-[var(--v-card)] rounded-[24px] border border-[var(--v-border)] shadow-card overflow-hidden"
           >
-            <div className="flex items-center gap-3 px-6 py-4 border-b border-[#E8E8E8]">
+              <div className="flex items-center gap-3 px-6 py-4 border-b border-[var(--v-border)]">
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#5D7B3D] to-[#A7C7E4] flex items-center justify-center">
                 <Sparkles className="w-4 h-4 text-white" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-[#1F2430]">Vijeta AI</p>
+                <p className="text-sm font-semibold text-[var(--v-heading)]">Vijeta AI</p>
                 <div className="flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 rounded-full bg-[#5D7B3D]" />
-                  <p className="text-xs text-[#8B93A7]">Online · Powered by Gemini</p>
+                  <p className="text-xs text-[var(--v-muted)]">Online · Powered by Gemini</p>
                 </div>
               </div>
             </div>
@@ -149,9 +149,9 @@ export function AISection() {
                   )}
                   <div
                     className={`rounded-2xl px-4 py-3 max-w-[80%] text-sm leading-relaxed ${
-                      msg.role === "user"
+                       msg.role === "user"
                         ? "bg-[#5D7B3D] text-white rounded-tr-sm"
-                        : "bg-[#F8F9FC] text-[#1F2430] rounded-tl-sm border border-[#E8E8E8]"
+                        : "bg-[var(--v-bg-secondary)] text-[var(--v-heading)] rounded-tl-sm border border-[var(--v-border)]"
                     }`}
                   >
                     {msg.text.split("\n\n").map((para, j) => (
@@ -165,11 +165,11 @@ export function AISection() {
             </div>
 
             <div className="px-6 pb-6">
-              <div className="flex items-center gap-3 bg-[#F8F9FC] rounded-xl border border-[#E8E8E8] px-4 py-3">
+              <div className="flex items-center gap-3 bg-[var(--v-bg-secondary)] rounded-xl border border-[var(--v-border)] px-4 py-3">
                 <input
                   type="text"
                   placeholder="Ask Vijeta AI anything..."
-                  className="flex-1 text-sm text-[#1F2430] bg-transparent outline-none placeholder:text-[#8B93A7]"
+                  className="flex-1 text-sm text-[var(--v-heading)] bg-transparent outline-none placeholder:text-[var(--v-muted)]"
                   readOnly
                 />
                 <button className="w-7 h-7 rounded-lg bg-[#5D7B3D] flex items-center justify-center">

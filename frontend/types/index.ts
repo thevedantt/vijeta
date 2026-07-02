@@ -18,6 +18,8 @@ export interface Student {
   github?: string
   linkedin?: string
   portfolio?: string
+  currentOpportunity?: string
+  availability?: string
 }
 
 export interface Badge {
@@ -52,6 +54,8 @@ export interface Opportunity {
   isBookmarked?: boolean
   applicants: number
   image?: string
+  lat?: number
+  lng?: number
 }
 
 export interface Team {

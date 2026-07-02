@@ -23,7 +23,7 @@ export default function ShowcasePage() {
   })
 
   return (
-    <div className="min-h-screen bg-[#F8F9FC] pt-20">
+    <div className="min-h-screen bg-[var(--v-bg)] pt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -33,10 +33,10 @@ export default function ShowcasePage() {
           <span className="text-sm font-medium text-[#F6C94D] uppercase tracking-widest mb-3 block">
             Showcase
           </span>
-          <h1 className="text-4xl font-bold text-[#1F2430] mb-4">
+          <h1 className="text-4xl font-bold text-[var(--v-heading)] mb-4">
             Student wins, permanently on display
           </h1>
-          <p className="text-lg text-[#5E6677] max-w-xl mx-auto">
+          <p className="text-lg text-[var(--v-body)] max-w-xl mx-auto">
             Real projects from real competitions. Learn from winners. Get inspired. Build the next one.
           </p>
 
@@ -47,8 +47,8 @@ export default function ShowcasePage() {
               { icon: Heart, label: "Likes", value: "12K+" },
             ].map((s) => (
               <div key={s.label} className="text-center">
-                <p className="text-2xl font-bold text-[#1F2430]">{s.value}</p>
-                <p className="text-xs text-[#8B93A7] mt-0.5">{s.label}</p>
+                <p className="text-2xl font-bold text-[var(--v-heading)]">{s.value}</p>
+                <p className="text-xs text-[var(--v-muted)] mt-0.5">{s.label}</p>
               </div>
             ))}
           </div>
@@ -68,7 +68,7 @@ export default function ShowcasePage() {
                 className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all ${
                   activeTag === tag
                     ? "bg-[#5D7B3D] border-[#5D7B3D] text-white"
-                    : "bg-white border-[#E8E8E8] text-[#5E6677] hover:border-[#5D7B3D]"
+                    : "bg-[var(--v-card)] border-[var(--v-border)] text-[var(--v-body)] hover:border-[#5D7B3D]"
                 }`}
               >
                 {tag}
@@ -91,7 +91,7 @@ export default function ShowcasePage() {
         </div>
 
         {filtered.length === 0 && (
-          <div className="text-center py-20 text-[#8B93A7]">
+          <div className="text-center py-20 text-[var(--v-muted)]">
             <Trophy className="w-12 h-12 mx-auto mb-4 opacity-30" />
             <p className="font-medium">No showcases found</p>
             <p className="text-sm mt-1">Try a different search or filter</p>

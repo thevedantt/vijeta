@@ -31,10 +31,10 @@ export function Flywheel() {
           <span className="text-sm font-medium text-[#5D7B3D] uppercase tracking-widest mb-3 block">
             The Solution
           </span>
-          <h2 className="text-4xl font-bold text-[#1F2430] mb-4">
+          <h2 className="text-4xl font-bold text-[var(--v-heading)] mb-4">
             The Vijeta Flywheel
           </h2>
-          <p className="text-lg text-[#5E6677] max-w-2xl mx-auto">
+          <p className="text-lg text-[var(--v-body)] max-w-2xl mx-auto">
             One continuous journey from discovery to mentorship. Every winner creates the next generation of winners.
           </p>
         </motion.div>
@@ -54,16 +54,16 @@ export function Flywheel() {
                 )}
                 <motion.div
                   whileHover={{ scale: 1.05 }}
-                  className="relative z-10 w-14 h-14 rounded-2xl border border-[#E8E8E8] flex items-center justify-center mb-3 shadow-card"
+                  className="relative z-10 w-14 h-14 rounded-2xl border border-[var(--v-border)] flex items-center justify-center mb-3 shadow-card"
                   style={{ backgroundColor: step.bg }}
                 >
                   <step.icon className="w-6 h-6" style={{ color: step.color }} />
-                  <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-white border border-[#E8E8E8] flex items-center justify-center">
+                  <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-[var(--v-card)] border border-[var(--v-border)] flex items-center justify-center">
                     <span className="text-[9px] font-bold text-[#8B93A7]">{i + 1}</span>
                   </div>
                 </motion.div>
-                <p className="font-semibold text-sm text-[#1F2430]">{step.label}</p>
-                <p className="text-xs text-[#8B93A7] mt-0.5 leading-snug">{step.description}</p>
+                <p className="font-semibold text-sm text-[var(--v-heading)]">{step.label}</p>
+                <p className="text-xs text-[var(--v-muted)] mt-0.5 leading-snug">{step.description}</p>
               </motion.div>
             ))}
           </div>
@@ -72,12 +72,12 @@ export function Flywheel() {
             initial={{ opacity: 0, y: 16 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.7 }}
-            className="mt-16 p-8 rounded-[24px] bg-gradient-to-br from-[#5D7B3D]/5 via-[#F8F9FC] to-[#A7C7E4]/5 border border-[#E8E8E8] text-center"
+            className="mt-16 p-8 rounded-[24px] bg-gradient-to-br from-[#5D7B3D]/5 via-[var(--v-bg-secondary)] to-[#A7C7E4]/5 border border-[var(--v-border)] text-center"
           >
-            <div className="text-2xl font-bold text-[#1F2430] mb-3">
+            <div className="text-2xl font-bold text-[var(--v-heading)] mb-3">
               Recognition is not the finish line.
             </div>
-            <div className="text-base text-[#5E6677]">
+            <div className="text-base text-[var(--v-body)]">
               Recognition is the fuel. Every winner becomes a guide. Every guide creates new winners.
             </div>
           </motion.div>

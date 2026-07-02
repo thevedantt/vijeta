@@ -13,15 +13,15 @@ import {
   Bell,
 } from "lucide-react"
 import { opportunities } from "@/lib/data/opportunities"
-import { showcases } from "@/lib/data/showcases"
 import { teams } from "@/lib/data/teams"
 import { OpportunityCard } from "@/components/shared/OpportunityCard"
+import { StatCard } from "@/components/shared/StatCard"
 
 const quickStats = [
-  { icon: Compass, label: "Saved Opportunities", value: "8", color: "#5D7B3D", bg: "#5D7B3D10" },
-  { icon: Users, label: "Active Teams", value: "2", color: "#E4568B", bg: "#E4568B10" },
-  { icon: Trophy, label: "Competitions Won", value: "3", color: "#F6C94D", bg: "#F6C94D20" },
-  { icon: TrendingUp, label: "Profile Views", value: "142", color: "#A7C7E4", bg: "#A7C7E420" },
+  { icon: Compass, label: "Saved Opportunities", value: 8, color: "#5D7B3D", max: 20, context: "Bookmarked this week", trend: "up" as const, subtitle: "of 20" },
+  { icon: Users, label: "Active Teams", value: 2, color: "#E4568B", max: 5, context: "2 need attention", trend: "down" as const, subtitle: "of 5" },
+  { icon: Trophy, label: "Competitions Won", value: 3, color: "#F6C94D", context: "Personal best!", trend: "up" as const },
+  { icon: TrendingUp, label: "Profile Views", value: 142, color: "#A7C7E4", context: "+18% this month", trend: "up" as const },
 ]
 
 const upcomingDeadlines = [
@@ -32,7 +32,7 @@ const upcomingDeadlines = [
 
 export default function DashboardPage() {
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-4 md:p-8 max-w-7xl">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -40,36 +40,19 @@ export default function DashboardPage() {
       >
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-[#1F2430]">Good morning, Aarav 👋</h1>
-            <p className="text-[#8B93A7] mt-1">You have 3 upcoming deadlines this week.</p>
+            <h1 className="text-2xl font-bold text-[var(--v-heading)]">Good morning, Aarav 👋</h1>
+            <p className="text-[var(--v-muted)] mt-1">You have 3 upcoming deadlines this week.</p>
           </div>
-          <button className="relative w-9 h-9 rounded-xl border border-[#E8E8E8] bg-white flex items-center justify-center hover:bg-gray-50 transition-colors shadow-sm">
-            <Bell className="w-4 h-4 text-[#8B93A7]" />
+          <Link href="/activity#notifications" className="relative w-9 h-9 rounded-xl border border-[var(--v-border)] bg-[var(--v-card)] flex items-center justify-center hover-bg-v-hover transition-colors shadow-sm">
+            <Bell className="w-4 h-4 text-[var(--v-muted)]" />
             <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#E4568B]" />
-          </button>
+          </Link>
         </div>
       </motion.div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {quickStats.map((stat, i) => (
-          <motion.div
-            key={stat.label}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.05 }}
-            className="bg-white rounded-[18px] border border-[#E8E8E8] p-5 shadow-card"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div
-                className="w-9 h-9 rounded-xl flex items-center justify-center"
-                style={{ backgroundColor: stat.bg }}
-              >
-                <stat.icon className="w-4 h-4" style={{ color: stat.color }} />
-              </div>
-            </div>
-            <p className="text-2xl font-bold text-[#1F2430]">{stat.value}</p>
-            <p className="text-xs text-[#8B93A7] mt-0.5">{stat.label}</p>
-          </motion.div>
+          <StatCard key={stat.label} {...stat} index={i} />
         ))}
       </div>
 
@@ -78,22 +61,22 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-[18px] border border-[#E8E8E8] p-6 shadow-card"
+          className="bg-[var(--v-card)] rounded-[18px] border border-[var(--v-border)] p-6 shadow-card"
         >
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-[#1F2430]">Upcoming Deadlines</h2>
-            <Calendar className="w-4 h-4 text-[#8B93A7]" />
+            <h2 className="font-bold text-[var(--v-heading)]">Upcoming Deadlines</h2>
+            <Calendar className="w-4 h-4 text-[var(--v-muted)]" />
           </div>
           <div className="space-y-3">
             {upcomingDeadlines.map((d) => (
               <div key={d.title} className="flex items-center gap-3">
                 <div className="w-1 h-10 rounded-full flex-shrink-0" style={{ backgroundColor: d.color }} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[#1F2430] truncate">{d.title}</p>
-                  <p className="text-xs text-[#8B93A7]">{d.deadline}</p>
+                  <p className="text-sm font-medium text-[var(--v-heading)] truncate">{d.title}</p>
+                  <p className="text-xs text-[var(--v-muted)]">{d.deadline}</p>
                 </div>
                 <span
-                  className={`text-xs font-bold px-2 py-1 rounded-lg flex-shrink-0 ${d.daysLeft <= 7 ? "bg-[#E4568B]/10 text-[#E4568B]" : "bg-[#F8F9FC] text-[#5E6677]"}`}
+                  className={`text-xs font-bold px-2 py-1 rounded-lg flex-shrink-0 ${d.daysLeft <= 7 ? "bg-[#E4568B]/10 text-[#E4568B]" : "bg-[var(--v-bg-secondary)] text-[var(--v-body)]"}`}
                 >
                   {d.daysLeft}d
                 </span>
@@ -101,7 +84,7 @@ export default function DashboardPage() {
             ))}
           </div>
           <Link href="/discover">
-            <button className="w-full mt-4 pt-4 border-t border-[#E8E8E8] flex items-center justify-between text-sm text-[#5D7B3D] font-medium hover:text-[#4a6230] transition-colors">
+            <button className="w-full mt-4 pt-4 border-t border-[var(--v-border)] flex items-center justify-between text-sm text-[#5D7B3D] font-medium hover:text-[#4a6230] transition-colors">
               View all opportunities
               <ArrowRight className="w-4 h-4" />
             </button>
@@ -112,22 +95,22 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
-          className="bg-white rounded-[18px] border border-[#E8E8E8] p-6 shadow-card"
+          className="bg-[var(--v-card)] rounded-[18px] border border-[var(--v-border)] p-6 shadow-card"
         >
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-[#1F2430]">Active Teams</h2>
-            <Users className="w-4 h-4 text-[#8B93A7]" />
+            <h2 className="font-bold text-[var(--v-heading)]">Active Teams</h2>
+            <Users className="w-4 h-4 text-[var(--v-muted)]" />
           </div>
           <div className="space-y-4">
             {teams.slice(0, 2).map((team) => (
-              <div key={team.id} className="flex items-start gap-3 pb-3 border-b border-[#E8E8E8] last:border-0">
+              <div key={team.id} className="flex items-start gap-3 pb-3 border-b border-[var(--v-border)] last:border-0">
                 <div className="flex -space-x-2 flex-shrink-0">
                   {team.members.slice(0, 3).map((m) => (
-                    <img key={m.id} src={m.avatar} alt={m.name} className="w-7 h-7 rounded-full border-2 border-white" />
+                    <img key={m.id} src={m.avatar} alt={m.name} className="w-7 h-7 rounded-full border-2 border-[var(--v-card)]" />
                   ))}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-[#1F2430] truncate">{team.name}</p>
+                  <p className="text-sm font-bold text-[var(--v-heading)] truncate">{team.name}</p>
                   <p className="text-xs text-[#5D7B3D] truncate">{team.opportunity}</p>
                   <div className="flex items-center gap-1 mt-1">
                     {team.rolesNeeded.slice(0, 2).map((r) => (
@@ -141,7 +124,7 @@ export default function DashboardPage() {
             ))}
           </div>
           <Link href="/team">
-            <button className="w-full mt-4 pt-4 border-t border-[#E8E8E8] flex items-center justify-between text-sm text-[#5D7B3D] font-medium hover:text-[#4a6230] transition-colors">
+            <button className="w-full mt-4 pt-4 border-t border-[var(--v-border)] flex items-center justify-between text-sm text-[#5D7B3D] font-medium hover:text-[#4a6230] transition-colors">
               Browse all teams
               <ArrowRight className="w-4 h-4" />
             </button>
@@ -172,9 +155,9 @@ export default function DashboardPage() {
               <p className="text-white/70 text-xs">Team Quantum needs a Backend Engineer</p>
             </div>
           </div>
-          <button className="mt-4 w-full bg-white/10 hover:bg-white/20 rounded-xl py-2.5 text-sm font-medium transition-colors">
+          <Link href="/assistant" className="mt-4 w-full bg-white/10 hover:bg-white/20 rounded-xl py-2.5 text-sm font-medium transition-colors block text-center">
             Ask AI anything
-          </button>
+          </Link>
         </motion.div>
       </div>
 
@@ -184,7 +167,7 @@ export default function DashboardPage() {
         transition={{ delay: 0.35 }}
       >
         <div className="flex items-center justify-between mb-5">
-          <h2 className="font-bold text-[#1F2430]">Recommended for You</h2>
+          <h2 className="font-bold text-[var(--v-heading)]">Recommended for You</h2>
           <Link href="/discover" className="text-sm text-[#5D7B3D] font-medium hover:underline flex items-center gap-1">
             See all <ArrowRight className="w-3.5 h-3.5" />
           </Link>

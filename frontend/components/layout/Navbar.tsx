@@ -6,6 +6,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { ThemeToggle } from "@/components/theme/ThemeToggle"
 import { cn } from "@/lib/utils"
 
 const navLinks = [
@@ -39,7 +40,7 @@ export function Navbar() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         isScrolled
-          ? "bg-white/90 backdrop-blur-md border-b border-[#E8E8E8] shadow-sm"
+          ? "bg-[var(--v-card)]/90 backdrop-blur-md border-b border-[var(--v-border)] shadow-sm"
           : "bg-transparent"
       )}
     >
@@ -49,7 +50,7 @@ export function Navbar() {
             <div className="w-8 h-8 rounded-lg bg-[#5D7B3D] flex items-center justify-center">
               <Zap className="w-4 h-4 text-white fill-white" />
             </div>
-            <span className="text-xl font-bold text-[#1F2430]">Vijeta</span>
+            <span className="text-xl font-bold text-[var(--v-heading)]">Vijeta</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
@@ -57,7 +58,7 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="px-4 py-2 text-sm font-medium text-[#5E6677] hover:text-[#1F2430] rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-[var(--v-body)] hover:text-[var(--v-heading)] rounded-lg hover-bg-v-hover transition-colors"
               >
                 {link.label}
               </Link>
@@ -65,8 +66,9 @@ export function Navbar() {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
+            <ThemeToggle />
             <Link href="/dashboard">
-              <Button variant="ghost" size="sm" className="text-[#5E6677] hover:text-[#1F2430]">
+              <Button variant="ghost" size="sm" className="text-[var(--v-body)] hover:text-[var(--v-heading)]">
                 Login
               </Button>
             </Link>
@@ -80,13 +82,16 @@ export function Navbar() {
             </Link>
           </div>
 
-          <button
-            className="md:hidden p-2 rounded-lg text-[#5E6677] hover:bg-gray-100 transition-colors"
-            onClick={() => setIsMobileOpen(!isMobileOpen)}
-            aria-label="Toggle menu"
-          >
-            {isMobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+          <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              className="p-2 rounded-lg text-[var(--v-body)] hover-bg-v-hover transition-colors"
+              onClick={() => setIsMobileOpen(!isMobileOpen)}
+              aria-label="Toggle menu"
+            >
+              {isMobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -97,7 +102,7 @@ export function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.15 }}
-            className="md:hidden bg-white border-b border-[#E8E8E8] px-4 pb-4"
+            className="md:hidden bg-[var(--v-card)] border-b border-[var(--v-border)] px-4 pb-4"
           >
             <nav className="flex flex-col gap-1 pt-2">
               {navLinks.map((link) => (
@@ -105,12 +110,12 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setIsMobileOpen(false)}
-                  className="px-4 py-3 text-sm font-medium text-[#5E6677] hover:text-[#1F2430] rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-4 py-3 text-sm font-medium text-[var(--v-body)] hover:text-[var(--v-heading)] rounded-lg hover-bg-v-hover transition-colors"
                 >
                   {link.label}
                 </Link>
               ))}
-              <div className="flex gap-2 mt-3 pt-3 border-t border-[#E8E8E8]">
+              <div className="flex gap-2 mt-3 pt-3 border-t border-[var(--v-border)]">
                 <Link href="/dashboard" className="flex-1">
                   <Button variant="outline" className="w-full">Login</Button>
                 </Link>

@@ -28,9 +28,9 @@ const hackathons = [
 
 export function TrustedBy() {
   return (
-    <section className="py-16 border-y border-[#E8E8E8] bg-white overflow-hidden">
+    <section className="py-16 border-y border-[var(--v-border)] bg-[var(--v-card)] overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
-        <p className="text-center text-sm font-medium text-[#8B93A7] uppercase tracking-widest">
+        <p className="text-center text-sm font-medium text-[var(--v-muted)] uppercase tracking-widest">
           Students from India's top colleges
         </p>
       </div>
@@ -40,10 +40,10 @@ export function TrustedBy() {
           {[...colleges, ...colleges].map((college, i) => (
             <div
               key={i}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#F8F9FC] border border-[#E8E8E8] whitespace-nowrap flex-shrink-0"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[var(--v-bg-secondary)] border border-[var(--v-border)] whitespace-nowrap flex-shrink-0"
             >
               <span className="w-2 h-2 rounded-full bg-[#5D7B3D]" />
-              <span className="text-sm font-medium text-[#5E6677]">{college}</span>
+              <span className="text-sm font-medium text-[var(--v-body)]">{college}</span>
             </div>
           ))}
         </div>
@@ -57,7 +57,7 @@ export function TrustedBy() {
       `}</style>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
-        <p className="text-center text-sm font-medium text-[#8B93A7] uppercase tracking-widest mb-8">
+        <p className="text-center text-sm font-medium text-[var(--v-muted)] uppercase tracking-widest mb-8">
           Supporting competitions
         </p>
         <div className="flex flex-wrap justify-center gap-3">

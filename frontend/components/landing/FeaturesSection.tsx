@@ -65,16 +65,16 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="py-24 bg-[#F8F9FC]">
+    <section id="features" className="py-24 bg-[var(--v-bg-secondary)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-20">
           <span className="text-sm font-medium text-[#5D7B3D] uppercase tracking-widest mb-3 block">
             Features
           </span>
-          <h2 className="text-4xl font-bold text-[#1F2430] mb-4">
+          <h2 className="text-4xl font-bold text-[var(--v-heading)] mb-4">
             Everything you need to win
           </h2>
-          <p className="text-lg text-[#5E6677] max-w-2xl mx-auto">
+          <p className="text-lg text-[var(--v-body)] max-w-2xl mx-auto">
             Vijeta is the complete platform — from finding the right opportunity to publishing your winning showcase.
           </p>
         </div>
@@ -110,15 +110,15 @@ function FeatureRow({ feature, index }: { feature: typeof features[0]; index: nu
           <feature.icon className="w-3.5 h-3.5" />
           {feature.badge}
         </div>
-        <h3 className="text-3xl font-bold text-[#1F2430] mb-4 leading-tight">
+        <h3 className="text-3xl font-bold text-[var(--v-heading)] mb-4 leading-tight">
           {feature.title}
         </h3>
-        <p className="text-[#5E6677] leading-relaxed mb-6">
+        <p className="text-[var(--v-body)] leading-relaxed mb-6">
           {feature.description}
         </p>
         <div className="grid grid-cols-2 gap-3">
           {feature.highlights.map((h) => (
-            <div key={h} className="flex items-center gap-2 text-sm text-[#5E6677]">
+              <div key={h} className="flex items-center gap-2 text-sm text-[var(--v-body)]">
               <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: feature.color }} />
               {h}
             </div>
@@ -130,7 +130,7 @@ function FeatureRow({ feature, index }: { feature: typeof features[0]; index: nu
         <motion.div
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
-          className="rounded-[24px] border border-[#E8E8E8] shadow-card overflow-hidden"
+          className="rounded-[24px] border border-[var(--v-border)] shadow-card overflow-hidden"
           style={{ backgroundColor: feature.illustrationBg }}
         >
           <div className="p-8">
@@ -142,8 +142,8 @@ function FeatureRow({ feature, index }: { feature: typeof features[0]; index: nu
                 <feature.icon className="w-5 h-5" style={{ color: feature.color }} />
               </div>
               <div>
-                <p className="font-semibold text-sm text-[#1F2430]">{feature.badge}</p>
-                <p className="text-xs text-[#8B93A7]">{feature.items.length} items available</p>
+                <p className="font-semibold text-sm text-[var(--v-heading)]">{feature.badge}</p>
+                <p className="text-xs text-[var(--v-muted)]">{feature.items.length} items available</p>
               </div>
             </div>
             <div className="space-y-3">
@@ -153,10 +153,10 @@ function FeatureRow({ feature, index }: { feature: typeof features[0]; index: nu
                   initial={{ opacity: 0, x: -10 }}
                   animate={inView ? { opacity: 1, x: 0 } : {}}
                   transition={{ delay: 0.3 + j * 0.1 }}
-                  className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 shadow-sm border border-[#E8E8E8]"
+                  className="flex items-center gap-3 bg-[var(--v-card)] rounded-xl px-4 py-3 shadow-sm border border-[var(--v-border)]"
                 >
                   <div className="w-2 h-2 rounded-full" style={{ backgroundColor: feature.color }} />
-                  <span className="text-sm font-medium text-[#1F2430]">{item}</span>
+                  <span className="text-sm font-medium text-[var(--v-heading)]">{item}</span>
                 </motion.div>
               ))}
             </div>
