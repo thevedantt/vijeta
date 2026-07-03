@@ -8,8 +8,7 @@ import { StudentCard } from "@/components/shared/StudentCard"
 import { SearchBar } from "@/components/shared/SearchBar"
 import { NearbyMap } from "@/components/shared/NearbyMap"
 import { CreateTeamModal } from "@/components/shared/CreateTeamModal"
-import { teams as initialTeams } from "@/lib/data/teams"
-import { students } from "@/lib/data/students"
+import type { Team, Student, Opportunity } from "@/types"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -47,12 +46,29 @@ export default function TeamPage() {
   const [search, setSearch] = useState("")
   const [activeLocation, setActiveLocation] = useState<LocationKey>("all")
   const [createOpen, setCreateOpen] = useState(false)
-  const [teamsList, setTeamsList] = useState(initialTeams)
+  const [teamsList, setTeamsList] = useState<Team[]>([])
+  const [students, setStudents] = useState<Student[]>([])
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const hash = window.location.hash.replace("#", "")
     if (hash === "find-members") setActiveTab(1)
     else if (hash === "open-teams") setActiveTab(0)
+  }, [])
+
+  useEffect(() => {
+    Promise.all([
+      fetch("/api/teams").then((res) => res.json()),
+      fetch("/api/users").then((res) => res.json()),
+      fetch("/api/opportunities").then((res) => res.json()),
+    ])
+      .then(([teamsData, usersData, oppsData]) => {
+        setTeamsList(teamsData)
+        setStudents(usersData)
+        setOpportunities(oppsData)
+      })
+      .finally(() => setLoading(false))
   }, [])
 
   const currentFilter = locationFilters.find((f) => f.key === activeLocation)!
@@ -127,6 +143,10 @@ export default function TeamPage() {
       {/* Open Teams Tab */}
       {activeTab === 0 && (
         <>
+          {loading ? (
+            <div className="text-center py-20 text-sm text-[var(--v-muted)]">Loading...</div>
+          ) : (
+          <>
           <p className="text-sm text-[var(--v-muted)] mb-4">
             <span className="font-semibold text-[var(--v-heading)]">{filteredTeams.length}</span> open teams
           </p>
@@ -142,12 +162,18 @@ export default function TeamPage() {
               </motion.div>
             ))}
           </div>
+          </>
+          )}
         </>
       )}
 
       {/* Find Members Tab */}
       {activeTab === 1 && (
         <>
+          {loading ? (
+            <div className="text-center py-20 text-sm text-[var(--v-muted)]">Loading...</div>
+          ) : (
+          <>
           <p className="text-sm text-[var(--v-muted)] mb-4">
             <span className="font-semibold text-[var(--v-heading)]">{filteredStudents.length}</span> students available
           </p>
@@ -163,6 +189,8 @@ export default function TeamPage() {
               </motion.div>
             ))}
           </div>
+          </>
+          )}
         </>
       )}
 
@@ -170,6 +198,7 @@ export default function TeamPage() {
         open={createOpen}
         onClose={() => setCreateOpen(false)}
         onCreate={(team) => setTeamsList((prev) => [team, ...prev])}
+        opportunities={opportunities}
       />
 
       {/* Nearby Map Tab */}

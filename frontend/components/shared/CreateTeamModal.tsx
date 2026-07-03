@@ -4,21 +4,10 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, Plus, Minus, Check, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import type { Team } from "@/types"
-
-const opportunities = [
-  "Smart India Hackathon 2025",
-  "Google Solution Challenge 2025",
-  "Hack36",
-  "Microsoft Imagine Cup 2025",
-  "Build With India Hackathon",
-  "Google Summer of Code 2026",
-  "RBI FinTech Hackathon 2026",
-]
+import type { Team, Opportunity } from "@/types"
 
 const autofillData = {
   teamName: "CodeCatalysts",
-  opportunity: "Smart India Hackathon 2025",
   description: "Looking for passionate developers to build an AI-powered platform for education accessibility in rural India.",
   roles: ["Frontend Developer", "ML Engineer", "UI/UX Designer"],
   college: "IIT Bombay",
@@ -29,17 +18,19 @@ interface CreateTeamModalProps {
   open: boolean
   onClose: () => void
   onCreate: (team: Team) => void
+  opportunities: Opportunity[]
 }
 
-export function CreateTeamModal({ open, onClose, onCreate }: CreateTeamModalProps) {
+export function CreateTeamModal({ open, onClose, onCreate, opportunities }: CreateTeamModalProps) {
   const [teamName, setTeamName] = useState("")
-  const [opportunity, setOpportunity] = useState("")
+  const [opportunityId, setOpportunityId] = useState("")
   const [description, setDescription] = useState("")
   const [roleInput, setRoleInput] = useState("")
   const [roles, setRoles] = useState<string[]>([])
   const [college, setCollege] = useState("")
   const [city, setCity] = useState("")
   const [created, setCreated] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
 
   const addRole = () => {
     const trimmed = roleInput.trim()
@@ -53,43 +44,43 @@ export function CreateTeamModal({ open, onClose, onCreate }: CreateTeamModalProp
 
   const handleAutofill = () => {
     setTeamName(autofillData.teamName)
-    setOpportunity(autofillData.opportunity)
+    setOpportunityId(opportunities[0]?.id ?? "")
     setDescription(autofillData.description)
     setRoles(autofillData.roles)
     setCollege(autofillData.college)
     setCity(autofillData.city)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!teamName || !opportunity) return
+    if (!teamName || !opportunityId || submitting) return
 
-    const newTeam: Team = {
-      id: `t${Date.now()}`,
-      name: teamName,
-      opportunity,
-      opportunityId: opportunity.toLowerCase().replace(/\s+/g, "-"),
-      leader: "Aarav Sharma",
-      leaderAvatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=AaravSharma",
-      members: [
-        { id: "s1", name: "Aarav Sharma", avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=AaravSharma", role: "Team Lead" },
-      ],
-      rolesNeeded: roles,
-      description,
-      skills: ["React", "Python", "TypeScript"],
-      college: college || "IIT Bombay",
-      city: city || "Mumbai",
-      createdAt: new Date().toISOString().split("T")[0],
-      isOpen: true,
+    setSubmitting(true)
+    try {
+      const res = await fetch("/api/teams", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: teamName,
+          opportunityId,
+          description,
+          college: college || undefined,
+          city: city || undefined,
+          rolesNeeded: roles,
+        }),
+      })
+      if (!res.ok) return
+      const newTeam: Team = await res.json()
+      onCreate(newTeam)
+      setCreated(true)
+    } finally {
+      setSubmitting(false)
     }
-
-    onCreate(newTeam)
-    setCreated(true)
   }
 
   const reset = () => {
     setTeamName("")
-    setOpportunity("")
+    setOpportunityId("")
     setDescription("")
     setRoles([])
     setRoleInput("")
@@ -158,7 +149,7 @@ export function CreateTeamModal({ open, onClose, onCreate }: CreateTeamModalProp
                     onClick={() => {
                       setCreated(false)
                       setTeamName("")
-                      setOpportunity("")
+                      setOpportunityId("")
                       setDescription("")
                       setRoles([])
                       setCollege("")
@@ -186,14 +177,14 @@ export function CreateTeamModal({ open, onClose, onCreate }: CreateTeamModalProp
                 <div>
                   <label className="text-xs font-semibold text-[var(--v-muted)] mb-1.5 block">Opportunity *</label>
                   <select
-                    value={opportunity}
-                    onChange={(e) => setOpportunity(e.target.value)}
+                    value={opportunityId}
+                    onChange={(e) => setOpportunityId(e.target.value)}
                     className="w-full h-10 px-3 rounded-xl border border-[var(--v-border)] bg-[var(--v-bg-secondary)] text-sm text-[var(--v-heading)] focus:outline-none focus:border-[#E4568B] transition-colors appearance-none"
                     required
                   >
                     <option value="">Select an opportunity</option>
                     {opportunities.map((o) => (
-                      <option key={o} value={o}>{o}</option>
+                      <option key={o.id} value={o.id}>{o.title}</option>
                     ))}
                   </select>
                 </div>
@@ -276,9 +267,10 @@ export function CreateTeamModal({ open, onClose, onCreate }: CreateTeamModalProp
                   </Button>
                   <Button
                     type="submit"
+                    disabled={submitting}
                     className="flex-1 h-11 rounded-xl bg-[#E4568B] hover:bg-[#cc3f79] text-white"
                   >
-                    <Plus className="w-4 h-4" /> Create Team
+                    <Plus className="w-4 h-4" /> {submitting ? "Creating..." : "Create Team"}
                   </Button>
                 </div>
               </form>

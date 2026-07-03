@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Compass, SlidersHorizontal, X, MapPin } from "lucide-react"
 import { OpportunityCard } from "@/components/shared/OpportunityCard"
@@ -9,7 +9,7 @@ import { Filters } from "@/components/shared/Filters"
 import { DiscoverStats } from "@/components/shared/DiscoverStats"
 import { AISuggestions } from "@/components/shared/AISuggestions"
 import { OpportunityMap } from "@/components/shared/OpportunityMap"
-import { opportunities } from "@/lib/data/opportunities"
+import type { Opportunity } from "@/types"
 import { cn } from "@/lib/utils"
 
 const filterConfig = [
@@ -45,10 +45,25 @@ const filterConfig = [
 ]
 
 export default function DiscoverPage() {
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([])
+  const [studentsCount, setStudentsCount] = useState(0)
+  const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
   const [activeFilters, setActiveFilters] = useState<Record<string, string>>({})
   const [showFilters, setShowFilters] = useState(false)
   const [showInPerson, setShowInPerson] = useState(false)
+
+  useEffect(() => {
+    Promise.all([
+      fetch("/api/opportunities").then((res) => res.json()),
+      fetch("/api/users").then((res) => res.json()),
+    ])
+      .then(([opps, users]) => {
+        setOpportunities(opps)
+        setStudentsCount(users.length)
+      })
+      .finally(() => setLoading(false))
+  }, [])
 
   const filtered = useMemo(
     () =>
@@ -90,7 +105,7 @@ export default function DiscoverPage() {
 
       {/* Stats Row */}
       <div className="mb-6">
-        <DiscoverStats />
+        <DiscoverStats opportunities={opportunities} studentsCount={studentsCount} />
       </div>
 
       {/* Search + Inline Filters Row */}
@@ -166,7 +181,11 @@ export default function DiscoverPage() {
               ))}
             </div>
 
-            {filtered.length === 0 && (
+            {loading && (
+              <div className="text-center py-20 text-sm text-[var(--v-muted)]">Loading...</div>
+            )}
+
+            {!loading && filtered.length === 0 && (
               <div className="text-center py-20 text-[var(--v-muted)]">
                 <Compass className="w-12 h-12 mx-auto mb-4 opacity-30" />
                 <p className="font-medium">No opportunities found</p>

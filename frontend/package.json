@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:seed": "tsx backend/db/seed.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.5.12",
@@ -16,6 +19,7 @@
     "clsx": "^2.1.1",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^1.0.0-rc.4",
+    "firebase": "^12.15.0",
     "framer-motion": "^12.42.2",
     "lucide-react": "^1.23.0",
     "maplibre-gl": "^5.24.0",

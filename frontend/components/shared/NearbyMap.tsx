@@ -1,13 +1,12 @@
 "use client"
 
 import { Map, MapMarker, MarkerContent, MarkerPopup, MapControls } from "@/components/ui/map"
-import { students as allStudents } from "@/lib/data/students"
 import { Student } from "@/types"
 import { Trophy, MapPin } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface NearbyMapProps {
-  students?: Student[]
+  students: Student[]
   center?: [number, number]
   zoom?: number
   className?: string
@@ -21,7 +20,7 @@ const badgeColors: Record<string, { bg: string; text: string }> = {
 }
 
 export function NearbyMap({ students, center, zoom, className }: NearbyMapProps) {
-  const displayStudents = students ?? allStudents
+  const displayStudents = students
 
   return (
     <div className={cn("relative w-full h-[520px] rounded-[18px] overflow-hidden border border-[var(--v-border)] shadow-card", className)}>

@@ -1,17 +1,29 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { ShowcaseCard } from "@/components/shared/ShowcaseCard"
 import { SearchBar } from "@/components/shared/SearchBar"
-import { showcases } from "@/lib/data/showcases"
+import type { Showcase } from "@/types"
 import { Trophy, Eye, Heart } from "lucide-react"
 
 const tagFilters = ["All", "AI", "IoT", "Mobile", "Blockchain", "AR", "Social Impact"]
 
 export default function ShowcasePage() {
+  const [showcases, setShowcases] = useState<Showcase[]>([])
+  const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
   const [activeTag, setActiveTag] = useState("All")
+
+  useEffect(() => {
+    fetch("/api/showcases")
+      .then((res) => res.json())
+      .then(setShowcases)
+      .finally(() => setLoading(false))
+  }, [])
+
+  const totalViews = showcases.reduce((sum, s) => sum + s.views, 0)
+  const totalLikes = showcases.reduce((sum, s) => sum + s.likes, 0)
 
   const filtered = showcases.filter((s) => {
     const matchesSearch =
@@ -42,9 +54,9 @@ export default function ShowcasePage() {
 
           <div className="flex items-center justify-center gap-8 mt-8">
             {[
-              { icon: Trophy, label: "National Winners", value: "42+" },
-              { icon: Eye, label: "Total Views", value: "180K+" },
-              { icon: Heart, label: "Likes", value: "12K+" },
+              { icon: Trophy, label: "National Winners", value: `${showcases.length}+` },
+              { icon: Eye, label: "Total Views", value: `${Math.round(totalViews / 1000)}K+` },
+              { icon: Heart, label: "Likes", value: `${Math.round(totalLikes / 1000)}K+` },
             ].map((s) => (
               <div key={s.label} className="text-center">
                 <p className="text-2xl font-bold text-[var(--v-heading)]">{s.value}</p>
@@ -90,7 +102,11 @@ export default function ShowcasePage() {
           ))}
         </div>
 
-        {filtered.length === 0 && (
+        {loading && (
+          <div className="text-center py-20 text-sm text-[var(--v-muted)]">Loading...</div>
+        )}
+
+        {!loading && filtered.length === 0 && (
           <div className="text-center py-20 text-[var(--v-muted)]">
             <Trophy className="w-12 h-12 mx-auto mb-4 opacity-30" />
             <p className="font-medium">No showcases found</p>

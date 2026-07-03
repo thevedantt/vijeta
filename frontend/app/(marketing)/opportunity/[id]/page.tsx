@@ -1,7 +1,8 @@
 "use client"
 
-import { use } from "react"
+import { use, useEffect, useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import {
   ArrowLeft,
@@ -15,9 +16,8 @@ import {
   CheckCircle,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { opportunities } from "@/lib/data/opportunities"
-import { showcases } from "@/lib/data/showcases"
 import { ShowcaseCard } from "@/components/shared/ShowcaseCard"
+import type { Opportunity, Showcase } from "@/types"
 
 const typeColors: Record<string, { bg: string; text: string }> = {
   Hackathon: { bg: "#5D7B3D10", text: "#5D7B3D" },
@@ -30,8 +30,74 @@ const typeColors: Record<string, { bg: string; text: string }> = {
 
 export default function OpportunityDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
-  const opp = opportunities.find((o) => o.id === id) || opportunities[0]
-  const relatedShowcases = showcases.slice(0, 2)
+  const router = useRouter()
+  const [opp, setOpp] = useState<Opportunity | null>(null)
+  const [relatedShowcases, setRelatedShowcases] = useState<Showcase[]>([])
+  const [loading, setLoading] = useState(true)
+  const [saved, setSaved] = useState(false)
+  const [shareCopied, setShareCopied] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+
+    fetch(`/api/opportunities/${id}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then(async (opportunity: Opportunity | null) => {
+        if (cancelled) return
+        setOpp(opportunity)
+        if (!opportunity) return
+
+        const showcasesRes = await fetch(
+          `/api/showcases?tags=${opportunity.tags.slice(0, 3).join(",")}`,
+        )
+        const allShowcases: Showcase[] = showcasesRes.ok ? await showcasesRes.json() : []
+        if (!cancelled) setRelatedShowcases(allShowcases.slice(0, 2))
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [id])
+
+  async function handleSave() {
+    const res = await fetch("/api/bookmarks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ opportunityId: id }),
+    })
+    if (res.status === 401) {
+      router.push("/sign-in")
+      return
+    }
+    if (res.ok) setSaved(true)
+  }
+
+  function handleShare() {
+    navigator.clipboard.writeText(window.location.href)
+    setShareCopied(true)
+    setTimeout(() => setShareCopied(false), 2000)
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F8F9FC] flex items-center justify-center pt-24">
+        <p className="text-sm text-[#8B93A7]">Loading...</p>
+      </div>
+    )
+  }
+
+  if (!opp) {
+    return (
+      <div className="min-h-screen bg-[#F8F9FC] flex items-center justify-center pt-24">
+        <p className="text-sm text-[#8B93A7]">Opportunity not found.</p>
+      </div>
+    )
+  }
+
   const typeColor = typeColors[opp.type] || typeColors.Competition
 
   return (
@@ -134,15 +200,26 @@ export default function OpportunityDetailPage({ params }: { params: Promise<{ id
                 <p className="text-2xl font-bold text-[#1F2430]">{opp.prize}</p>
                 <p className="text-sm text-[#8B93A7]">Prize Pool</p>
               </div>
-              <Button className="w-full h-11 bg-[#5D7B3D] hover:bg-[#4a6230] text-white rounded-[14px] text-sm font-medium mb-3">
-                Apply Now
-              </Button>
-              <div className="flex gap-2">
-                <Button variant="outline" className="flex-1 h-11 rounded-[14px] border-[#E8E8E8] gap-2 text-sm">
-                  <Bookmark className="w-4 h-4" /> Save
+              <Link href={`/team?opportunityId=${opp.id}`}>
+                <Button className="w-full h-11 bg-[#5D7B3D] hover:bg-[#4a6230] text-white rounded-[14px] text-sm font-medium mb-3">
+                  Apply Now
                 </Button>
-                <Button variant="outline" className="flex-1 h-11 rounded-[14px] border-[#E8E8E8] gap-2 text-sm">
-                  <Share2 className="w-4 h-4" /> Share
+              </Link>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={handleSave}
+                  disabled={saved}
+                  className="flex-1 h-11 rounded-[14px] border-[#E8E8E8] gap-2 text-sm"
+                >
+                  <Bookmark className="w-4 h-4" /> {saved ? "Saved" : "Save"}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleShare}
+                  className="flex-1 h-11 rounded-[14px] border-[#E8E8E8] gap-2 text-sm"
+                >
+                  <Share2 className="w-4 h-4" /> {shareCopied ? "Copied!" : "Share"}
                 </Button>
               </div>
             </div>

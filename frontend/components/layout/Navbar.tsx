@@ -68,12 +68,12 @@ export function Navbar() {
 
           <div className="hidden md:flex items-center gap-2">
             <ThemeToggle />
-            <Link href="/dashboard">
+            <Link href="/sign-in">
               <Button variant="ghost" size="sm" className="text-[var(--v-body)] hover:text-[var(--v-heading)]">
                 Login
               </Button>
             </Link>
-            <Link href="/dashboard">
+            <Link href="/sign-up">
               <Button
                 size="sm"
                 className="bg-[#5D7B3D] hover:bg-[#4a6230] text-white rounded-[14px] px-5"
@@ -117,10 +117,10 @@ export function Navbar() {
                 </Link>
               ))}
               <div className="flex gap-2 mt-3 pt-3 border-t border-[var(--v-border)]">
-                <Link href="/dashboard" className="flex-1">
+                <Link href="/sign-in" className="flex-1">
                   <Button variant="outline" className="w-full">Login</Button>
                 </Link>
-                <Link href="/dashboard" className="flex-1">
+                <Link href="/sign-up" className="flex-1">
                   <Button className="w-full bg-[#5D7B3D] hover:bg-[#4a6230] text-white">
                     Get Started
                   </Button>

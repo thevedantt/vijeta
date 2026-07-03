@@ -3,10 +3,15 @@
 import { useCallback } from "react"
 import { Briefcase, Users, Trophy, Sparkles } from "lucide-react"
 import { StatCard } from "./StatCard"
-import { opportunities } from "@/lib/data/opportunities"
-import { students } from "@/lib/data/students"
+import type { Opportunity } from "@/types"
 
-export function DiscoverStats() {
+export function DiscoverStats({
+  opportunities,
+  studentsCount,
+}: {
+  opportunities: Opportunity[]
+  studentsCount: number
+}) {
   const scrollToOpportunities = useCallback(() => {
     const el = document.getElementById("opportunities")
     if (el) {
@@ -29,7 +34,7 @@ export function DiscoverStats() {
     {
       icon: Users,
       label: "Active Students",
-      value: students.length,
+      value: studentsCount,
       color: "#4a90c0",
       max: 100,
       context: "Find your teammate",
