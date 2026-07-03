@@ -3,31 +3,22 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // NOTE: open rules — this app authenticates via Clerk (Next.js layer),
+    // not Firebase Auth, so `request.auth` is always null for the client
+    // Firestore SDK. Chat pages are gated behind Clerk auth in proxy.ts,
+    // but these rules do not enforce anything at the Firestore data layer.
+    // Tighten this (e.g. Clerk->Firebase custom token auth) before
+    // handling sensitive data here.
     match /chats/{chatId} {
-      allow read: if request.auth != null
-        && request.auth.uid in resource.data.participantIds;
-
-      allow create: if request.auth != null
-        && request.resource.data.participantIds.hasAny([request.auth.uid]);
-
-      allow update: if request.auth != null
-        && request.auth.uid in resource.data.participantIds;
-
-      allow delete: if false;
+      allow read, write: if true;
 
       match /messages/{messageId} {
-        allow read: if request.auth != null
-          && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participantIds;
-
-        allow create: if request.auth != null
-          && request.resource.data.senderId == request.auth.uid;
-
-        allow update, delete: if false;
+        allow read, write: if true;
       }
     }
 
     match /{document=**} {
-      allow read, write: if request.auth != null;
+      allow read, write: if false;
     }
   }
 }
