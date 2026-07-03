@@ -418,12 +418,10 @@ Vijeta is an open-source platform built for students, by students. Contributions
 
 ---
 
+
 <p align="center">
-  <strong>Vijeta</strong> — विजेता — One who conquers.
+  Built with ❤️ by <a href="https://github.com/vedanttalekar">Vedant Talekar</a>
 </p>
 <p align="center">
-  <i>Winning should not be the end of the journey.<br>Every winner should create resources that help produce the next generation of winners.</i>
-</p>
-<p align="center">
-  <sub>Built with ❤️ for ambitious students across India</sub>
+  <strong>Vijeta</strong> — वैजेत (Victory)
 </p>

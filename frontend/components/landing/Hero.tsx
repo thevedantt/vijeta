@@ -82,28 +82,28 @@ export function Hero() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="relative hidden lg:block h-[520px]"
+            className="relative h-[400px] sm:h-[480px] lg:h-[520px]"
           >
-            <div className="absolute inset-8 rounded-3xl bg-[var(--v-card)] border border-[var(--v-border)] shadow-card" />
+            <div className="absolute inset-4 sm:inset-6 lg:inset-8 rounded-3xl bg-[var(--v-card)] border border-[var(--v-border)] shadow-card" />
 
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative w-72 h-72">
+              <div className="relative w-48 h-48 sm:w-60 sm:h-60 lg:w-72 lg:h-72">
                 <img src="/vijeta.png" alt="विजेता" className="w-full h-full rounded-full object-cover shadow-card border border-[var(--v-border)]" />
               </div>
             </div>
 
             {[
-              { icon: "🏆", pos: "top-8 left-8" },
-              { icon: "👥", pos: "top-8 right-8" },
-              { icon: "📚", pos: "bottom-8 left-8" },
-              { icon: "🚀", pos: "bottom-8 right-8" },
+              { icon: "🏆", pos: "top-4 sm:top-6 lg:top-8 left-4 sm:left-6 lg:left-8" },
+              { icon: "👥", pos: "top-4 sm:top-6 lg:top-8 right-4 sm:right-6 lg:right-8" },
+              { icon: "📚", pos: "bottom-4 sm:bottom-6 lg:bottom-8 left-4 sm:left-6 lg:left-8" },
+              { icon: "🚀", pos: "bottom-4 sm:bottom-6 lg:bottom-8 right-4 sm:right-6 lg:right-8" },
             ].map((node, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.5 + i * 0.12 }}
-                className={`absolute ${node.pos} w-12 h-12 rounded-xl bg-[var(--v-card)] shadow-card border border-[var(--v-border)] flex items-center justify-center text-xl`}
+                className={`absolute ${node.pos} w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-xl bg-[var(--v-card)] shadow-card border border-[var(--v-border)] flex items-center justify-center text-base sm:text-lg lg:text-xl`}
               >
                 {node.icon}
               </motion.div>
@@ -115,17 +115,17 @@ export function Hero() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6 + i * 0.15, duration: 0.5 }}
-                className={`absolute ${card.pos} bg-[var(--v-card)] rounded-2xl border border-[var(--v-border)] shadow-card px-4 py-3 flex items-center gap-3`}
+                className={`absolute ${card.pos} bg-[var(--v-card)] rounded-2xl border border-[var(--v-border)] shadow-card px-3 py-2 sm:px-4 sm:py-3 flex items-center gap-2 sm:gap-3`}
               >
                 <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                  className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 rounded-lg flex items-center justify-center flex-shrink-0"
                   style={{ backgroundColor: card.iconBg }}
                 >
-                  <card.icon className="w-4 h-4" style={{ color: card.iconColor }} />
+                  <card.icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4" style={{ color: card.iconColor }} />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-[var(--v-heading)]">{card.label}</p>
-                  <p className="text-xs text-[var(--v-muted)]">{card.sub}</p>
+                  <p className="text-[10px] sm:text-xs font-semibold text-[var(--v-heading)]">{card.label}</p>
+                  <p className="text-[10px] sm:text-xs text-[var(--v-muted)]">{card.sub}</p>
                 </div>
               </motion.div>
             ))}
