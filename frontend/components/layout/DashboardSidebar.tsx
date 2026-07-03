@@ -2,7 +2,8 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { useUser } from "@clerk/nextjs"
 import {
   LayoutDashboard,
   Compass,
@@ -41,10 +42,21 @@ interface DashboardSidebarProps {
 
 export function DashboardSidebar({ isOpen, onClose, collapsed, onToggleCollapse }: DashboardSidebarProps) {
   const pathname = usePathname()
+  const { user } = useUser()
+  const [college, setCollege] = useState("")
 
   useEffect(() => {
     onClose()
   }, [pathname])
+
+  useEffect(() => {
+    fetch("/api/users/me")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((profile: { college?: string } | null) => setCollege(profile?.college ?? ""))
+  }, [])
+
+  const displayName = user?.fullName ?? "Loading..."
+  const avatarUrl = user?.imageUrl ?? "https://api.dicebear.com/9.x/avataaars/svg?seed=Vijeta"
 
   return (
     <>
@@ -228,16 +240,16 @@ export function DashboardSidebar({ isOpen, onClose, collapsed, onToggleCollapse 
             <ThemeToggle />
             {collapsed ? (
               <div className="w-9 h-9 rounded-full bg-cover bg-center border-2 border-[var(--v-border)] flex-shrink-0"
-                style={{ backgroundImage: `url(https://api.dicebear.com/9.x/avataaars/svg?seed=AaravSharma)` }}
+                style={{ backgroundImage: `url(${avatarUrl})` }}
               />
             ) : (
               <>
                 <div className="w-9 h-9 rounded-full bg-cover bg-center border-2 border-[var(--v-border)] flex-shrink-0"
-                  style={{ backgroundImage: `url(https://api.dicebear.com/9.x/avataaars/svg?seed=AaravSharma)` }}
+                  style={{ backgroundImage: `url(${avatarUrl})` }}
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[var(--v-heading)] truncate">Aarav Sharma</p>
-                  <p className="text-xs text-[var(--v-muted)] truncate">IIT Bombay</p>
+                  <p className="text-sm font-medium text-[var(--v-heading)] truncate">{displayName}</p>
+                  <p className="text-xs text-[var(--v-muted)] truncate">{college}</p>
                 </div>
                 <Link href="/activity#notifications" className="w-8 h-8 rounded-lg hover-bg-v-hover flex items-center justify-center transition-colors">
                   <Bell className="w-4 h-4 text-[var(--v-muted)]" />

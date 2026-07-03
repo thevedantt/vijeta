@@ -2,14 +2,21 @@
 
 import Link from "next/link"
 import { motion, useInView } from "framer-motion"
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { ArrowRight, ExternalLink, Eye, Heart } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { showcases } from "@/lib/data/showcases"
+import type { Showcase } from "@/types"
 
 export function ShowcaseSection() {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: "-80px" })
+  const [showcases, setShowcases] = useState<Showcase[]>([])
+
+  useEffect(() => {
+    fetch("/api/showcases")
+      .then((res) => res.json())
+      .then(setShowcases)
+  }, [])
 
   return (
     <section ref={ref} id="showcase" className="py-24 bg-[var(--v-card)]">

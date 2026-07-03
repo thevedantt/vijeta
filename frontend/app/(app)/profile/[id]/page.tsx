@@ -1,13 +1,14 @@
 "use client"
 
-import { use } from "react"
+import { use, useEffect, useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { ArrowLeft, Code2, Briefcase, Globe, Trophy, Star, Users, MapPin, GraduationCap, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { students } from "@/lib/data/students"
-import { showcases } from "@/lib/data/showcases"
 import { ShowcaseCard } from "@/components/shared/ShowcaseCard"
+import { findDirectConversation, createConversation } from "@/lib/firestore/chat"
+import type { Student, Showcase } from "@/types"
 
 const badgeColors: Record<string, { bg: string; text: string }> = {
   green: { bg: "#5D7B3D10", text: "#5D7B3D" },
@@ -18,8 +19,65 @@ const badgeColors: Record<string, { bg: string; text: string }> = {
 
 export default function StudentProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
-  const student = students.find((s) => s.id === id) || students[0]
-  const studentShowcases = showcases.slice(0, 2)
+  const router = useRouter()
+  const [student, setStudent] = useState<Student | null>(null)
+  const [studentShowcases, setStudentShowcases] = useState<Showcase[]>([])
+  const [meId, setMeId] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [startingChat, setStartingChat] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+
+    Promise.all([
+      fetch(`/api/users/${id}`).then((res) => (res.ok ? res.json() : null)),
+      fetch("/api/users/me").then((res) => (res.ok ? res.json() : null)),
+    ]).then(async ([target, me]: [Student | null, Student | null]) => {
+      if (cancelled) return
+      setStudent(target)
+      setMeId(me?.id ?? null)
+      if (target) {
+        const showcasesRes = await fetch(`/api/showcases?college=${encodeURIComponent(target.college)}`)
+        const showcases: Showcase[] = showcasesRes.ok ? await showcasesRes.json() : []
+        if (!cancelled) setStudentShowcases(showcases.slice(0, 2))
+      }
+    }).finally(() => {
+      if (!cancelled) setLoading(false)
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [id])
+
+  async function handleChat() {
+    if (!meId || !student || startingChat) return
+    setStartingChat(true)
+    try {
+      const existing = await findDirectConversation(meId, student.id)
+      const chatId = existing ? existing.id : await createConversation("direct", [meId, student.id])
+      router.push(`/chat?conv=${chatId}`)
+    } finally {
+      setStartingChat(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="p-4 md:p-8 max-w-5xl">
+        <div className="text-center py-20 text-sm text-[var(--v-muted)]">Loading...</div>
+      </div>
+    )
+  }
+
+  if (!student) {
+    return (
+      <div className="p-4 md:p-8 max-w-5xl">
+        <div className="text-center py-20 text-sm text-[var(--v-muted)]">Student not found.</div>
+      </div>
+    )
+  }
 
   return (
     <div className="p-4 md:p-8 max-w-5xl">
@@ -33,6 +91,7 @@ export default function StudentProfilePage({ params }: { params: Promise<{ id: s
           <div className="px-8 pb-8">
             <div className="flex items-end justify-between -mt-14 mb-6">
               <div className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={student.avatar}
                   alt={student.name}
@@ -44,11 +103,13 @@ export default function StudentProfilePage({ params }: { params: Promise<{ id: s
                   </div>
                 )}
               </div>
-              <Link href={`/chat?user=${student.id}`}>
-                <Button className="bg-[#5D7B3D] hover:bg-[#4a6230] text-white rounded-[14px] gap-2">
-                  <MessageCircle className="w-4 h-4" /> Chat
-                </Button>
-              </Link>
+              <Button
+                onClick={handleChat}
+                disabled={startingChat || !meId}
+                className="bg-[#5D7B3D] hover:bg-[#4a6230] text-white rounded-[14px] gap-2"
+              >
+                <MessageCircle className="w-4 h-4" /> {startingChat ? "Starting..." : "Chat"}
+              </Button>
             </div>
 
             <div className="flex flex-wrap items-start gap-4">
@@ -105,11 +166,10 @@ export default function StudentProfilePage({ params }: { params: Promise<{ id: s
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-3 md:gap-4 mb-6">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 mb-6">
           {[
             { icon: Trophy, label: "Competition Wins", value: student.wins, color: "#F6C94D", bg: "#F6C94D20" },
             { icon: Star, label: "Projects Built", value: student.projects, color: "#5D7B3D", bg: "#5D7B3D10" },
-            { icon: Users, label: "Teams Joined", value: 4, color: "#E4568B", bg: "#E4568B10" },
           ].map((stat) => (
             <div key={stat.label} className="bg-[var(--v-card)] rounded-[18px] border border-[var(--v-border)] p-5 shadow-card text-center">
               <div className="w-10 h-10 rounded-xl mx-auto mb-3 flex items-center justify-center" style={{ backgroundColor: stat.bg }}>
@@ -153,11 +213,15 @@ export default function StudentProfilePage({ params }: { params: Promise<{ id: s
 
           <div className="lg:col-span-2">
             <h2 className="font-bold text-[var(--v-heading)] mb-4">Showcases</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {studentShowcases.map((sc) => (
-                <ShowcaseCard key={sc.id} showcase={sc} />
-              ))}
-            </div>
+            {studentShowcases.length === 0 ? (
+              <p className="text-sm text-[var(--v-muted)]">No showcases yet.</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {studentShowcases.map((sc) => (
+                  <ShowcaseCard key={sc.id} showcase={sc} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </motion.div>

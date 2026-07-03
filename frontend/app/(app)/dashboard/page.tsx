@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { useUser } from "@clerk/nextjs"
 import {
   Trophy,
   Users,
@@ -15,31 +16,36 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react"
-import { opportunities } from "@/lib/data/opportunities"
-import { teams } from "@/lib/data/teams"
 import { OpportunityCard } from "@/components/shared/OpportunityCard"
 import { StatCard } from "@/components/shared/StatCard"
+import type { Opportunity, Team } from "@/types"
 import { cn } from "@/lib/utils"
 
-const quickStats = [
-  { icon: Compass, label: "Saved Opportunities", value: 8, color: "#5D7B3D", max: 20, context: "Browse to save more", trend: "up" as const, subtitle: "of 20", href: "/discover" },
-  { icon: Users, label: "Active Teams", value: 2, color: "#E4568B", max: 5, context: "Manage your teams", trend: "down" as const, subtitle: "of 5", href: "/team" },
-  { icon: Trophy, label: "Competitions Won", value: 3, color: "#F6C94D", context: "View your showcase", trend: "up" as const, href: "/showcase" },
-  { icon: TrendingUp, label: "Profile Views", value: 142, color: "#A7C7E4", context: "See your profile", trend: "up" as const, href: "/profile" },
-]
+interface DashboardData {
+  stats: { savedCount: number; activeTeamCount: number; wins: number; profileViews: number }
+  deadlines: Opportunity[]
+  activeTeams: Team[]
+  recommended: Opportunity[]
+}
 
-const upcomingDeadlines = [
-  { title: "Smart India Hackathon 2026", deadline: "Aug 15, 2026", daysLeft: 43, color: "#5D7B3D", oppId: "o1", month: 7, day: 15 },
-  { title: "Google Solution Challenge", deadline: "Jul 10, 2026", daysLeft: 7, color: "#E4568B", oppId: "o2", month: 6, day: 10 },
-  { title: "Hack36", deadline: "Jul 25, 2026", daysLeft: 22, color: "#F6C94D", oppId: "o6", month: 6, day: 25 },
-]
+const DEADLINE_COLORS = ["#5D7B3D", "#E4568B", "#F6C94D"]
 
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
-function CalendarPopup({ onClose }: { onClose: () => void }) {
-  const today = new Date(2026, 6, 3)
-  const [viewMonth, setViewMonth] = useState(6)
-  const [viewYear, setViewYear] = useState(2026)
+interface DeadlineItem {
+  title: string
+  deadline: string
+  daysLeft: number
+  color: string
+  oppId: string
+  month: number
+  day: number
+}
+
+function CalendarPopup({ deadlines, onClose }: { deadlines: DeadlineItem[]; onClose: () => void }) {
+  const today = new Date()
+  const [viewMonth, setViewMonth] = useState(today.getMonth())
+  const [viewYear, setViewYear] = useState(today.getFullYear())
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -61,7 +67,7 @@ function CalendarPopup({ onClose }: { onClose: () => void }) {
   }
 
   const deadlineDots: Record<number, string[]> = {}
-  upcomingDeadlines.forEach((d) => {
+  deadlines.forEach((d) => {
     const date = new Date(d.deadline)
     if (date.getMonth() === viewMonth && date.getFullYear() === viewYear) {
       const day = date.getDate()
@@ -100,7 +106,7 @@ function CalendarPopup({ onClose }: { onClose: () => void }) {
           <div key={`empty-${i}`} />
         ))}
         {days.map((day) => {
-          const isToday = viewMonth === 6 && viewYear === 2026 && day === 3
+          const isToday = viewMonth === today.getMonth() && viewYear === today.getFullYear() && day === today.getDate()
           const dots = deadlineDots[day] || []
           return (
             <div
@@ -124,7 +130,7 @@ function CalendarPopup({ onClose }: { onClose: () => void }) {
       </div>
       {/* Legend */}
       <div className="mt-3 pt-3 border-t border-[var(--v-border)] space-y-1.5">
-        {upcomingDeadlines.map((d) => (
+        {deadlines.map((d) => (
           <Link key={d.title} href={`/opportunity/${d.oppId}`} className="flex items-center gap-2 text-xs hover:bg-[var(--v-bg-secondary)] rounded-lg p-1.5 transition-colors">
             <span className={`w-2 h-2 rounded-full`} style={{ backgroundColor: d.color }} />
             <span className="flex-1 text-[var(--v-heading)] truncate">{d.title}</span>
@@ -137,7 +143,40 @@ function CalendarPopup({ onClose }: { onClose: () => void }) {
 }
 
 export default function DashboardPage() {
+  const { user } = useUser()
   const [calOpen, setCalOpen] = useState(false)
+  const [data, setData] = useState<DashboardData | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch("/api/dashboard")
+      .then((res) => res.json())
+      .then(setData)
+      .finally(() => setLoading(false))
+  }, [])
+
+  const deadlineItems: DeadlineItem[] = (data?.deadlines ?? []).map((opp, i) => {
+    const deadlineDate = new Date(opp.deadline)
+    const daysLeft = Math.max(0, Math.ceil((deadlineDate.getTime() - Date.now()) / 86400000))
+    return {
+      title: opp.title,
+      deadline: opp.deadline,
+      daysLeft,
+      color: DEADLINE_COLORS[i % DEADLINE_COLORS.length],
+      oppId: opp.id,
+      month: deadlineDate.getMonth(),
+      day: deadlineDate.getDate(),
+    }
+  })
+
+  const quickStats = data
+    ? [
+        { icon: Compass, label: "Saved Opportunities", value: data.stats.savedCount, color: "#5D7B3D", context: "Browse to save more", trend: "up" as const, href: "/discover" },
+        { icon: Users, label: "Active Teams", value: data.stats.activeTeamCount, color: "#E4568B", context: "Manage your teams", trend: "up" as const, href: "/team" },
+        { icon: Trophy, label: "Competitions Won", value: data.stats.wins, color: "#F6C94D", context: "View your showcase", trend: "up" as const, href: "/showcase" },
+        { icon: TrendingUp, label: "Profile Views", value: data.stats.profileViews, color: "#A7C7E4", context: "See your profile", trend: "up" as const, href: "/profile" },
+      ]
+    : []
 
   return (
     <div className="p-4 md:p-8 max-w-7xl">
@@ -148,8 +187,12 @@ export default function DashboardPage() {
       >
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-[var(--v-heading)]">Good morning, Aarav 👋</h1>
-            <p className="text-[var(--v-muted)] mt-1">You have 3 upcoming deadlines this week.</p>
+            <h1 className="text-2xl font-bold text-[var(--v-heading)]">
+              Good morning, {user?.firstName ?? "there"} 👋
+            </h1>
+            <p className="text-[var(--v-muted)] mt-1">
+              You have {deadlineItems.length} upcoming deadline{deadlineItems.length === 1 ? "" : "s"} this week.
+            </p>
           </div>
           <Link href="/activity#notifications" className="relative w-9 h-9 rounded-xl border border-[var(--v-border)] bg-[var(--v-card)] flex items-center justify-center hover-bg-v-hover transition-colors shadow-sm">
             <Bell className="w-4 h-4 text-[var(--v-muted)]" />
@@ -158,6 +201,10 @@ export default function DashboardPage() {
         </div>
       </motion.div>
 
+      {loading ? (
+        <div className="text-center py-20 text-sm text-[var(--v-muted)]">Loading...</div>
+      ) : (
+      <>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {quickStats.map((stat, i) => (
           <StatCard key={stat.label} {...stat} index={i} />
@@ -180,16 +227,19 @@ export default function DashboardPage() {
               >
                 <Calendar className="w-4 h-4 text-[var(--v-muted)]" />
               </button>
-              {calOpen && <CalendarPopup onClose={() => setCalOpen(false)} />}
+              {calOpen && <CalendarPopup deadlines={deadlineItems} onClose={() => setCalOpen(false)} />}
             </div>
           </div>
           <div className="space-y-3">
-            {upcomingDeadlines.map((d) => (
+            {deadlineItems.length === 0 && (
+              <p className="text-sm text-[var(--v-muted)]">No upcoming deadlines.</p>
+            )}
+            {deadlineItems.map((d) => (
               <Link key={d.title} href={`/opportunity/${d.oppId}`} className="flex items-center gap-3 group">
                 <div className="w-1 h-10 rounded-full flex-shrink-0" style={{ backgroundColor: d.color }} />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-[var(--v-heading)] truncate group-hover:text-[#5D7B3D] transition-colors">{d.title}</p>
-                  <p className="text-xs text-[var(--v-muted)]">{d.deadline}</p>
+                  <p className="text-xs text-[var(--v-muted)]">{new Date(d.deadline).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</p>
                 </div>
                 <span
                   className={`text-xs font-bold px-2 py-1 rounded-lg flex-shrink-0 ${d.daysLeft <= 7 ? "bg-[#E4568B]/10 text-[#E4568B]" : d.daysLeft <= 30 ? "bg-[#F6C94D]/20 text-[#b8922c]" : "bg-[var(--v-bg-secondary)] text-[var(--v-body)]"}`}
@@ -218,10 +268,15 @@ export default function DashboardPage() {
             <Users className="w-4 h-4 text-[var(--v-muted)]" />
           </div>
           <div className="space-y-4">
-            {teams.slice(0, 2).map((team) => (
+            {(data?.activeTeams ?? []).length === 0 && (
+              <p className="text-sm text-[var(--v-muted)]">No active teams yet.</p>
+            )}
+            {(data?.activeTeams ?? []).map((team) => (
+              // eslint-disable-next-line @next/next/no-img-element
               <Link key={team.id} href="/team" className="flex items-start gap-3 pb-3 border-b border-[var(--v-border)] last:border-0 group">
                 <div className="flex -space-x-2 flex-shrink-0">
                   {team.members.slice(0, 3).map((m) => (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img key={m.id} src={m.avatar} alt={m.name} className="w-7 h-7 rounded-full border-2 border-[var(--v-card)]" />
                   ))}
                 </div>
@@ -258,17 +313,17 @@ export default function DashboardPage() {
             <h2 className="font-bold">AI Suggestions</h2>
           </div>
           <div className="space-y-3">
-            <Link href="/opportunity/o2" className="block bg-white/10 hover:bg-white/20 rounded-xl p-3 text-sm transition-colors">
+            <Link href="/discover" className="block bg-white/10 hover:bg-white/20 rounded-xl p-3 text-sm transition-colors">
               <p className="font-medium mb-0.5">Best match for you</p>
-              <p className="text-white/70 text-xs">Google Solution Challenge — matches your AI/ML skills</p>
+              <p className="text-white/70 text-xs">Browse opportunities matching your skills</p>
             </Link>
-            <Link href="/opportunity/o1" className="block bg-white/10 hover:bg-white/20 rounded-xl p-3 text-sm transition-colors">
+            <Link href="/discover" className="block bg-white/10 hover:bg-white/20 rounded-xl p-3 text-sm transition-colors">
               <p className="font-medium mb-0.5">Deadline coming up</p>
-              <p className="text-white/70 text-xs">SIH 2026 registration closes in 43 days</p>
+              <p className="text-white/70 text-xs">Check your saved opportunities for closing dates</p>
             </Link>
             <Link href="/team" className="block bg-white/10 hover:bg-white/20 rounded-xl p-3 text-sm transition-colors">
               <p className="font-medium mb-0.5">Team looking for you</p>
-              <p className="text-white/70 text-xs">Team Quantum needs a Backend Engineer</p>
+              <p className="text-white/70 text-xs">Browse open teams needing your skills</p>
             </Link>
           </div>
           <Link href="/assistant" className="mt-4 w-full bg-white/10 hover:bg-white/20 rounded-xl py-2.5 text-sm font-medium transition-colors block text-center">
@@ -289,11 +344,13 @@ export default function DashboardPage() {
           </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {opportunities.slice(0, 3).map((opp) => (
+          {(data?.recommended ?? []).map((opp) => (
             <OpportunityCard key={opp.id} opportunity={opp} />
           ))}
         </div>
       </motion.div>
+      </>
+      )}
     </div>
   )
 }

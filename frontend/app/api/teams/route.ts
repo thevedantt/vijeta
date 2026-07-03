@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
     isOpen: params.has("isOpen") ? params.get("isOpen") === "true" : undefined,
     college: params.get("college") ?? undefined,
     search: params.get("search") ?? undefined,
+    memberOrLeaderId: params.get("mine") === "true" ? user.id : undefined,
   })
 
   return Response.json(teams)

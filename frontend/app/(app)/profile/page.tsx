@@ -1,19 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { Code2, Briefcase, Globe, Edit3, Trophy, Star, Users, MapPin, GraduationCap, ChevronDown, Bookmark, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { students } from "@/lib/data/students"
-import { opportunities } from "@/lib/data/opportunities"
-import { showcases } from "@/lib/data/showcases"
 import { ShowcaseCard } from "@/components/shared/ShowcaseCard"
+import type { Student, Opportunity, Showcase, Team } from "@/types"
 import { cn } from "@/lib/utils"
-
-const me = students[0]
-const savedOppIds = ["o1", "o3", "o5", "o7", "o9", "o11", "o2", "o4"]
-const savedOpps = opportunities.filter((o) => savedOppIds.includes(o.id))
 
 const badgeColors: Record<string, { bg: string; text: string }> = {
   green: { bg: "#5D7B3D10", text: "#5D7B3D" },
@@ -24,6 +18,38 @@ const badgeColors: Record<string, { bg: string; text: string }> = {
 
 export default function ProfilePage() {
   const [savedOpen, setSavedOpen] = useState(false)
+  const [me, setMe] = useState<Student | null>(null)
+  const [savedOpps, setSavedOpps] = useState<Opportunity[]>([])
+  const [myShowcases, setMyShowcases] = useState<Showcase[]>([])
+  const [teamsJoined, setTeamsJoined] = useState(0)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch("/api/users/me")
+      .then((res) => res.json())
+      .then(async (user: Student) => {
+        setMe(user)
+
+        const [bookmarksRes, showcasesRes, teamsRes] = await Promise.all([
+          fetch("/api/bookmarks"),
+          fetch(`/api/showcases?college=${encodeURIComponent(user.college)}`),
+          fetch("/api/teams?mine=true"),
+        ])
+        setSavedOpps(bookmarksRes.ok ? await bookmarksRes.json() : [])
+        setMyShowcases(showcasesRes.ok ? await showcasesRes.json() : [])
+        const teams: Team[] = teamsRes.ok ? await teamsRes.json() : []
+        setTeamsJoined(teams.length)
+      })
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (loading || !me) {
+    return (
+      <div className="p-4 md:p-8 max-w-5xl">
+        <div className="text-center py-20 text-sm text-[var(--v-muted)]">Loading...</div>
+      </div>
+    )
+  }
 
   return (
     <div className="p-4 md:p-8 max-w-5xl">
@@ -33,6 +59,7 @@ export default function ProfilePage() {
           <div className="px-8 pb-8">
             <div className="flex items-end justify-between -mt-14 mb-6">
               <div className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={me.avatar}
                   alt={me.name}
@@ -42,9 +69,11 @@ export default function ProfilePage() {
                   <Trophy className="w-3 h-3 text-white fill-white" />
                 </div>
               </div>
-              <Button variant="outline" className="rounded-[14px] border-[var(--v-border)] gap-2">
-                <Edit3 className="w-4 h-4" /> Edit Profile
-              </Button>
+              <Link href="/settings">
+                <Button variant="outline" className="rounded-[14px] border-[var(--v-border)] gap-2">
+                  <Edit3 className="w-4 h-4" /> Edit Profile
+                </Button>
+              </Link>
             </div>
 
             <div className="flex flex-wrap items-start gap-4">
@@ -105,7 +134,7 @@ export default function ProfilePage() {
           {[
             { icon: Trophy, label: "Competition Wins", value: me.wins, color: "#F6C94D", bg: "#F6C94D20" },
             { icon: Star, label: "Projects Built", value: me.projects, color: "#5D7B3D", bg: "#5D7B3D10" },
-            { icon: Users, label: "Teams Joined", value: 4, color: "#E4568B", bg: "#E4568B10" },
+            { icon: Users, label: "Teams Joined", value: teamsJoined, color: "#E4568B", bg: "#E4568B10" },
           ].map((stat) => (
             <div key={stat.label} className="bg-[var(--v-card)] rounded-[18px] border border-[var(--v-border)] p-5 shadow-card text-center">
               <div className="w-10 h-10 rounded-xl mx-auto mb-3 flex items-center justify-center" style={{ backgroundColor: stat.bg }}>
@@ -158,6 +187,9 @@ export default function ProfilePage() {
                       <ArrowRight className="w-3.5 h-3.5 text-[var(--v-muted)] opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
                     </Link>
                   ))}
+                  {savedOpps.length === 0 && (
+                    <p className="text-sm text-[var(--v-muted)] text-center py-2">No saved opportunities yet.</p>
+                  )}
                 </div>
                 <Link href="/discover" className="mt-3 flex items-center justify-center gap-1.5 py-2 text-xs font-medium text-[#5D7B3D] hover:underline">
                   View all saved <ArrowRight className="w-3 h-3" />
@@ -199,11 +231,15 @@ export default function ProfilePage() {
 
           <div className="lg:col-span-2">
             <h2 className="font-bold text-[var(--v-heading)] mb-4">My Showcases</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {showcases.slice(0, 2).map((sc) => (
-                <ShowcaseCard key={sc.id} showcase={sc} />
-              ))}
-            </div>
+            {myShowcases.length === 0 ? (
+              <p className="text-sm text-[var(--v-muted)]">No showcases from your college yet.</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {myShowcases.slice(0, 2).map((sc) => (
+                  <ShowcaseCard key={sc.id} showcase={sc} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </motion.div>
