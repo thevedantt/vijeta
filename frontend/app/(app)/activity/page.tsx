@@ -1,8 +1,9 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { ArrowRight, Check, X } from "lucide-react"
+import { ArrowRight, Check } from "lucide-react"
 import {
   History,
   Compass,
@@ -10,7 +11,6 @@ import {
   Star,
   LayoutDashboard,
   Trophy,
-  MapPin,
   UserPlus,
   Eye,
   Zap,
@@ -20,168 +20,118 @@ import {
   Calendar,
   MessageSquare,
   AlertCircle,
+  type LucideIcon,
 } from "lucide-react"
 
-const activityLog = [
-  {
-    id: "a1",
-    icon: Users,
-    label: "Explored Team Up",
-    detail: "Filtered teammates by Mumbai location — found 4 students nearby",
-    time: "2 minutes ago",
-    category: "Team",
-    href: "/team",
-  },
-  {
-    id: "a2",
-    icon: Compass,
-    label: "Viewed Smart India Hackathon",
-    detail: "Checked opportunity details, prize, and eligibility criteria",
-    time: "15 minutes ago",
-    category: "Discover",
-    href: "/discover",
-  },
-  {
-    id: "a3",
-    icon: Star,
-    label: "Checked Showcase",
-    detail: "Browsed winning projects from SIH 2024 and Hack36",
-    time: "1 hour ago",
-    category: "Showcase",
-    href: "/showcase",
-  },
-  {
-    id: "a4",
-    icon: LayoutDashboard,
-    label: "Dashboard Overview",
-    detail: "Reviewed 3 upcoming deadlines and 8 saved opportunities",
-    time: "2 hours ago",
-    category: "Dashboard",
-    href: "/dashboard",
-  },
-  {
-    id: "a5",
-    icon: MapPin,
-    label: "Location-based search",
-    detail: "Searched for opportunities in Mumbai and Pune",
-    time: "3 hours ago",
-    category: "Discover",
-    href: "/discover",
-  },
-  {
-    id: "a6",
-    icon: UserPlus,
-    label: "Sent team invitation",
-    detail: "Invited Priya Patel to join project team",
-    time: "Yesterday",
-    category: "Team",
-    href: "/team",
-  },
-  {
-    id: "a7",
-    icon: Trophy,
-    label: "Registered for competition",
-    detail: "Signed up for Google Solution Challenge 2025",
-    time: "Yesterday",
-    category: "Discover",
-    href: "/discover",
-  },
-  {
-    id: "a8",
-    icon: Eye,
-    label: "Profile viewed",
-    detail: "Your profile was viewed by 3 recruiters",
-    time: "2 days ago",
-    category: "Profile",
-    href: "/profile",
-  },
-  {
-    id: "a9",
-    icon: Bot,
-    label: "Asked Margdarshak",
-    detail: "Queried about SIH team requirements and deadlines",
-    time: "2 days ago",
-    category: "Assistant",
-    href: "/assistant",
-  },
-  {
-    id: "a10",
-    icon: Star,
-    label: "Published showcase",
-    detail: "Added 'CropSense' project to your showcase",
-    time: "3 days ago",
-    category: "Showcase",
-    href: "/showcase",
-  },
-]
+interface ActivityRow {
+  id: number
+  type: string
+  description: string
+  referenceId: string | null
+  referenceType: string | null
+  createdAt: string
+}
 
-const notifications = [
-  {
-    id: "n1",
-    icon: UserPlus,
-    label: "Team invitation",
-    detail: "Riya Verma invited you to join 'CodeCrafters' for SIH 2025",
-    time: "5 minutes ago",
-    type: "pending",
-    color: "#E4568B",
-  },
-  {
-    id: "n2",
-    icon: Compass,
-    label: "New opportunity match",
-    detail: "Hack36 — Full-stack roles match your React expertise",
-    time: "20 minutes ago",
-    type: "pending",
-    color: "#5D7B3D",
-  },
-  {
-    id: "n3",
-    icon: Calendar,
-    label: "Deadline reminder",
-    detail: "Google Solution Challenge closes in 7 days",
-    time: "1 hour ago",
-    type: "pending",
-    color: "#b8922c",
-  },
-  {
-    id: "n4",
-    icon: MessageSquare,
-    label: "New message",
-    detail: "Arjun Mehta: 'Hey, interested in collaborating on a project?'",
-    time: "3 hours ago",
-    type: "read",
-    color: "#4a90c0",
-  },
-  {
-    id: "n5",
-    icon: Eye,
-    label: "Profile view",
-    detail: "Your profile was viewed by 2 recruiters from Accenture",
-    time: "Yesterday",
-    type: "read",
-    color: "#A7C7E4",
-  },
-  {
-    id: "n6",
-    icon: AlertCircle,
-    label: "Opportunity expiring",
-    detail: "Smart India Hackathon 2025 registration ends Aug 15",
-    time: "Yesterday",
-    type: "read",
-    color: "#E4568B",
-  },
-  {
-    id: "n7",
-    icon: UserCheck,
-    label: "Team request accepted",
-    detail: "Priya Patel accepted your invitation to join 'Quantum Devs'",
-    time: "2 days ago",
-    type: "read",
-    color: "#5D7B3D",
-  },
-]
+interface NotificationRow {
+  id: number
+  type: string
+  title: string
+  description: string
+  isRead: boolean
+  createdAt: string
+}
+
+const activityMeta: Record<string, { icon: LucideIcon; label: string; category: string; href: string }> = {
+  saved_opportunity: { icon: Compass, label: "Saved an opportunity", category: "Discover", href: "/discover" },
+  joined_team: { icon: Users, label: "Joined a team", category: "Team", href: "/team" },
+  created_team: { icon: UserPlus, label: "Created a team", category: "Team", href: "/team" },
+  applied_team: { icon: Users, label: "Applied to a team", category: "Team", href: "/team" },
+  submitted_project: { icon: Star, label: "Submitted a project", category: "Showcase", href: "/showcase" },
+  won_competition: { icon: Trophy, label: "Won a competition", category: "Showcase", href: "/showcase" },
+  earned_badge: { icon: Star, label: "Earned a badge", category: "Profile", href: "/profile" },
+  updated_profile: { icon: LayoutDashboard, label: "Updated profile", category: "Profile", href: "/profile" },
+  connected_mentor: { icon: UserCheck, label: "Connected with a mentor", category: "Mentor", href: "/dashboard" },
+  showcase_liked: { icon: Star, label: "Liked a showcase", category: "Showcase", href: "/showcase" },
+  showcase_viewed: { icon: Eye, label: "Viewed a showcase", category: "Showcase", href: "/showcase" },
+}
+
+const notificationMeta: Record<string, { icon: LucideIcon; color: string }> = {
+  team_invite: { icon: UserPlus, color: "#E4568B" },
+  application_received: { icon: Users, color: "#5D7B3D" },
+  application_accepted: { icon: UserCheck, color: "#5D7B3D" },
+  application_rejected: { icon: AlertCircle, color: "#E4568B" },
+  new_message: { icon: MessageSquare, color: "#4a90c0" },
+  deadline_reminder: { icon: Calendar, color: "#b8922c" },
+  opportunity_match: { icon: Compass, color: "#5D7B3D" },
+  teammate_suggestion: { icon: Bot, color: "#4a90c0" },
+  showcase_like: { icon: Eye, color: "#A7C7E4" },
+}
+
+function timeAgo(iso: string): string {
+  const diffMs = Date.now() - new Date(iso).getTime()
+  const minutes = Math.floor(diffMs / 60000)
+  if (minutes < 1) return "Just now"
+  if (minutes < 60) return `${minutes} minute${minutes === 1 ? "" : "s"} ago`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"} ago`
+  const days = Math.floor(hours / 24)
+  if (days === 1) return "Yesterday"
+  return `${days} days ago`
+}
 
 export default function ActivityPage() {
+  const [activities, setActivities] = useState<ActivityRow[]>([])
+  const [notifications, setNotifications] = useState<NotificationRow[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    Promise.all([
+      fetch("/api/activities").then((res) => res.json()),
+      fetch("/api/notifications").then((res) => res.json()),
+    ])
+      .then(([a, n]) => {
+        setActivities(a)
+        setNotifications(n)
+      })
+      .finally(() => setLoading(false))
+  }, [])
+
+  async function markRead(id: number) {
+    const res = await fetch(`/api/notifications/${id}`, { method: "PATCH" })
+    if (res.ok) {
+      setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)))
+    }
+  }
+
+  const unreadCount = notifications.filter((n) => !n.isRead).length
+
+  const stats = [
+    {
+      label: "Saved Opportunities",
+      value: activities.filter((a) => a.type === "saved_opportunity").length,
+      icon: Compass,
+      color: "#5D7B3D",
+    },
+    {
+      label: "Teams Engaged",
+      value: activities.filter((a) => ["joined_team", "created_team", "applied_team"].includes(a.type)).length,
+      icon: Users,
+      color: "#E4568B",
+    },
+    {
+      label: "Showcases Liked",
+      value: activities.filter((a) => a.type === "showcase_liked").length,
+      icon: Star,
+      color: "#b8922c",
+    },
+    {
+      label: "Total Activity",
+      value: activities.length,
+      icon: Zap,
+      color: "#4a90c0",
+    },
+  ]
+
   return (
     <div className="p-4 md:p-8">
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
@@ -194,17 +144,15 @@ export default function ActivityPage() {
         <p className="text-[var(--v-muted)] ml-12">Your digital footprint and notifications across Vijeta.</p>
       </motion.div>
 
+      {loading ? (
+        <div className="text-center py-20 text-sm text-[var(--v-muted)]">Loading...</div>
+      ) : (
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Left Column — Activity Timeline (60%) */}
         <div className="w-full lg:w-[60%]">
           {/* Stats summary */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-            {[
-              { label: "Opportunities Viewed", value: "12", icon: Compass, color: "#5D7B3D" },
-              { label: "Teams Engaged", value: "4", icon: Users, color: "#E4568B" },
-              { label: "Projects Saved", value: "6", icon: Star, color: "#b8922c" },
-              { label: "AI Queries", value: "9", icon: Zap, color: "#4a90c0" },
-            ].map((s) => (
+            {stats.map((s) => (
               <div key={s.label} className="bg-[var(--v-card)] rounded-[16px] border border-[var(--v-border)] p-4 shadow-card">
                 <div className="flex items-center gap-2 mb-1.5">
                   <s.icon className="w-3.5 h-3.5" style={{ color: s.color }} />
@@ -219,8 +167,18 @@ export default function ActivityPage() {
           <div className="relative">
             <div className="absolute left-[17px] top-0 bottom-0 w-px bg-[var(--v-border)] hidden md:block" />
 
+            {activities.length === 0 ? (
+              <p className="text-sm text-[var(--v-muted)] py-10 text-center">No activity yet.</p>
+            ) : (
             <div className="space-y-1">
-              {activityLog.map((item, i) => (
+              {activities.map((item, i) => {
+                const meta = activityMeta[item.type] ?? {
+                  icon: History,
+                  label: item.type,
+                  category: "Activity",
+                  href: "/dashboard",
+                }
+                return (
                 <motion.div
                   key={item.id}
                   initial={{ opacity: 0, x: -8 }}
@@ -228,36 +186,38 @@ export default function ActivityPage() {
                   transition={{ delay: i * 0.04 }}
                 >
                   <Link
-                    href={item.href}
+                    href={meta.href}
                     className="relative flex items-start gap-4 md:gap-5 p-3 md:p-4 rounded-2xl hover:bg-[var(--v-card)] transition-colors group"
                   >
                     <div className="hidden md:flex w-[34px] h-[34px] rounded-xl bg-[var(--v-bg-secondary)] border border-[var(--v-border)] items-center justify-center flex-shrink-0 z-10 group-hover:border-[#5D7B3D]/40 transition-colors">
-                      <item.icon className="w-4 h-4 text-[var(--v-muted)] group-hover:text-[#5D7B3D] transition-colors" />
+                      <meta.icon className="w-4 h-4 text-[var(--v-muted)] group-hover:text-[#5D7B3D] transition-colors" />
                     </div>
 
                     <div className="md:hidden w-8 h-8 rounded-lg bg-[var(--v-bg-secondary)] border border-[var(--v-border)] flex items-center justify-center flex-shrink-0 group-hover:border-[#5D7B3D]/40 transition-colors">
-                      <item.icon className="w-3.5 h-3.5 text-[var(--v-muted)] group-hover:text-[#5D7B3D] transition-colors" />
+                      <meta.icon className="w-3.5 h-3.5 text-[var(--v-muted)] group-hover:text-[#5D7B3D] transition-colors" />
                     </div>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
                         <div>
-                          <p className="text-sm font-semibold text-[var(--v-heading)] group-hover:text-[#5D7B3D] transition-colors">{item.label}</p>
-                          <p className="text-xs text-[var(--v-body)] mt-0.5">{item.detail}</p>
+                          <p className="text-sm font-semibold text-[var(--v-heading)] group-hover:text-[#5D7B3D] transition-colors">{meta.label}</p>
+                          <p className="text-xs text-[var(--v-body)] mt-0.5">{item.description}</p>
                         </div>
-                        <span className="text-[10px] text-[var(--v-muted)] flex-shrink-0 whitespace-nowrap">{item.time}</span>
+                        <span className="text-[10px] text-[var(--v-muted)] flex-shrink-0 whitespace-nowrap">{timeAgo(item.createdAt)}</span>
                       </div>
                       <div className="flex items-center gap-2 mt-1.5">
                         <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[var(--v-bg-secondary)] border border-[var(--v-border)] text-[var(--v-muted)]">
-                          {item.category}
+                          {meta.category}
                         </span>
                         <ArrowRight className="w-3 h-3 text-[var(--v-muted)] opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
                     </div>
                   </Link>
                 </motion.div>
-              ))}
+                )
+              })}
             </div>
+            )}
           </div>
         </div>
 
@@ -272,12 +232,21 @@ export default function ActivityPage() {
               <div className="flex items-center gap-2">
                 <Bell className="w-4 h-4 text-[var(--v-muted)]" />
                 <h2 className="font-bold text-[var(--v-heading)]">Notifications</h2>
-                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-[#E4568B]/10 text-[#E4568B]">3 new</span>
+                {unreadCount > 0 && (
+                  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-[#E4568B]/10 text-[#E4568B]">
+                    {unreadCount} new
+                  </span>
+                )}
               </div>
             </div>
 
+            {notifications.length === 0 ? (
+              <p className="text-sm text-[var(--v-muted)] py-10 text-center">No notifications yet.</p>
+            ) : (
             <div className="space-y-2">
-              {notifications.map((n, i) => (
+              {notifications.map((n, i) => {
+                const meta = notificationMeta[n.type] ?? { icon: Bell, color: "#8B93A7" }
+                return (
                 <motion.div
                   key={n.id}
                   initial={{ opacity: 0, y: 8 }}
@@ -288,24 +257,27 @@ export default function ActivityPage() {
                   <div className="flex items-start gap-3">
                     <div
                       className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-                      style={{ backgroundColor: `${n.color}15` }}
+                      style={{ backgroundColor: `${meta.color}15` }}
                     >
-                      <n.icon className="w-4 h-4" style={{ color: n.color }} />
+                      <meta.icon className="w-4 h-4" style={{ color: meta.color }} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
                         <div>
-                          <p className="text-sm font-semibold text-[var(--v-heading)]">{n.label}</p>
-                          <p className="text-xs text-[var(--v-body)] mt-0.5">{n.detail}</p>
+                          <p className="text-sm font-semibold text-[var(--v-heading)]">{n.title}</p>
+                          <p className="text-xs text-[var(--v-body)] mt-0.5">{n.description}</p>
                         </div>
                       </div>
                       <div className="flex items-center justify-between mt-1.5">
-                        <span className="text-[10px] text-[var(--v-muted)]">{n.time}</span>
+                        <span className="text-[10px] text-[var(--v-muted)]">{timeAgo(n.createdAt)}</span>
                         <div className="flex items-center gap-2">
-                          {n.type === "pending" ? (
+                          {!n.isRead ? (
                             <>
                               <span className="w-1.5 h-1.5 rounded-full bg-[#E4568B]" />
-                              <button className="text-[10px] font-medium text-[#5D7B3D] hover:underline flex items-center gap-0.5">
+                              <button
+                                onClick={() => markRead(n.id)}
+                                className="text-[10px] font-medium text-[#5D7B3D] hover:underline flex items-center gap-0.5"
+                              >
                                 <Check className="w-3 h-3" /> Mark read
                               </button>
                             </>
@@ -317,11 +289,14 @@ export default function ActivityPage() {
                     </div>
                   </div>
                 </motion.div>
-              ))}
+                )
+              })}
             </div>
+            )}
           </motion.div>
         </div>
       </div>
+      )}
     </div>
   )
 }
