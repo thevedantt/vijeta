@@ -2,7 +2,7 @@
   <img src="frontend/public/banner.png" alt="Vijeta Banner" width="100%" />
 </p>
 
-<h1 align="center">Vijeta</h1>
+<h1 align="center">विजेता</h1>
 <h3 align="center">The Operating System for Ambitious Students</h3>
 
 <p align="center">
