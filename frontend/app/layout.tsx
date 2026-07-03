@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   description:
     "Discover opportunities. Build with great teammates. Win competitions. Guide the next generation. The complete platform for ambitious Indian students.",
   keywords: ["hackathon", "scholarship", "student", "India", "competition", "team", "SIH"],
+  icons: [{ rel: "icon", url: "/vijeta.png" }],
 }
 
 export default function RootLayout({
