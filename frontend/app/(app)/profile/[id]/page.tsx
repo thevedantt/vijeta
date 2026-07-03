@@ -4,11 +4,12 @@ import { use, useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { ArrowLeft, Code2, Briefcase, Globe, Trophy, Star, Users, MapPin, GraduationCap, MessageCircle } from "lucide-react"
+import { ArrowLeft, Code2, Briefcase, Globe, Trophy, Star, MapPin, GraduationCap, MessageCircle, UserPlus, Check, X, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ShowcaseCard } from "@/components/shared/ShowcaseCard"
 import { findDirectConversation, createConversation } from "@/lib/firestore/chat"
 import type { Student, Showcase } from "@/types"
+import type { FriendStatus } from "@/backend/db/queries/friends"
 
 const badgeColors: Record<string, { bg: string; text: string }> = {
   green: { bg: "#5D7B3D10", text: "#5D7B3D" },
@@ -25,6 +26,9 @@ export default function StudentProfilePage({ params }: { params: Promise<{ id: s
   const [meId, setMeId] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [startingChat, setStartingChat] = useState(false)
+  const [friendStatus, setFriendStatus] = useState<FriendStatus>("none")
+  const [friendshipId, setFriendshipId] = useState<number | null>(null)
+  const [friendActionPending, setFriendActionPending] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -41,6 +45,21 @@ export default function StudentProfilePage({ params }: { params: Promise<{ id: s
         const showcasesRes = await fetch(`/api/showcases?college=${encodeURIComponent(target.college)}`)
         const showcases: Showcase[] = showcasesRes.ok ? await showcasesRes.json() : []
         if (!cancelled) setStudentShowcases(showcases.slice(0, 2))
+
+        if (me && me.id !== target.id) {
+          const [statusRes, friendsRes] = await Promise.all([
+            fetch(`/api/friends/status/${target.id}`),
+            fetch("/api/friends"),
+          ])
+          const { status } = statusRes.ok ? await statusRes.json() : { status: "none" }
+          if (cancelled) return
+          setFriendStatus(status)
+          if (status === "pending_incoming" && friendsRes.ok) {
+            const { incoming } = await friendsRes.json()
+            const match = incoming.find((r: { id: number; student: Student }) => r.student.id === target.id)
+            if (!cancelled) setFriendshipId(match?.id ?? null)
+          }
+        }
       }
     }).finally(() => {
       if (!cancelled) setLoading(false)
@@ -60,6 +79,39 @@ export default function StudentProfilePage({ params }: { params: Promise<{ id: s
       router.push(`/chat?conv=${chatId}`)
     } finally {
       setStartingChat(false)
+    }
+  }
+
+  async function handleSendRequest() {
+    if (!student || friendActionPending) return
+    setFriendActionPending(true)
+    try {
+      const res = await fetch("/api/friends", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ addresseeId: student.id }),
+      })
+      if (res.ok) {
+        const friendship = await res.json()
+        setFriendStatus(friendship.status === "accepted" ? "friends" : "pending_outgoing")
+      }
+    } finally {
+      setFriendActionPending(false)
+    }
+  }
+
+  async function handleRespond(action: "accept" | "reject") {
+    if (!friendshipId || friendActionPending) return
+    setFriendActionPending(true)
+    try {
+      const res = await fetch(`/api/friends/${friendshipId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action }),
+      })
+      if (res.ok) setFriendStatus(action === "accept" ? "friends" : "none")
+    } finally {
+      setFriendActionPending(false)
     }
   }
 
@@ -103,13 +155,50 @@ export default function StudentProfilePage({ params }: { params: Promise<{ id: s
                   </div>
                 )}
               </div>
-              <Button
-                onClick={handleChat}
-                disabled={startingChat || !meId}
-                className="bg-[#5D7B3D] hover:bg-[#4a6230] text-white rounded-[14px] gap-2"
-              >
-                <MessageCircle className="w-4 h-4" /> {startingChat ? "Starting..." : "Chat"}
-              </Button>
+              <div className="flex items-center gap-2">
+                {friendStatus === "friends" && (
+                  <Button
+                    onClick={handleChat}
+                    disabled={startingChat || !meId}
+                    className="bg-[#5D7B3D] hover:bg-[#4a6230] text-white rounded-[14px] gap-2"
+                  >
+                    <MessageCircle className="w-4 h-4" /> {startingChat ? "Starting..." : "Chat"}
+                  </Button>
+                )}
+                {friendStatus === "none" && meId && (
+                  <Button
+                    onClick={handleSendRequest}
+                    disabled={friendActionPending}
+                    className="bg-[#5D7B3D] hover:bg-[#4a6230] text-white rounded-[14px] gap-2"
+                  >
+                    <UserPlus className="w-4 h-4" /> Add Friend
+                  </Button>
+                )}
+                {friendStatus === "pending_outgoing" && (
+                  <Button disabled variant="outline" className="rounded-[14px] gap-2 border-[var(--v-border)]">
+                    <Clock className="w-4 h-4" /> Requested
+                  </Button>
+                )}
+                {friendStatus === "pending_incoming" && (
+                  <>
+                    <Button
+                      onClick={() => handleRespond("accept")}
+                      disabled={friendActionPending}
+                      className="bg-[#5D7B3D] hover:bg-[#4a6230] text-white rounded-[14px] gap-2"
+                    >
+                      <Check className="w-4 h-4" /> Accept
+                    </Button>
+                    <Button
+                      onClick={() => handleRespond("reject")}
+                      disabled={friendActionPending}
+                      variant="outline"
+                      className="rounded-[14px] gap-2 border-[var(--v-border)]"
+                    >
+                      <X className="w-4 h-4" /> Decline
+                    </Button>
+                  </>
+                )}
+              </div>
             </div>
 
             <div className="flex flex-wrap items-start gap-4">

@@ -1,5 +1,6 @@
 import { insertActivity } from "@/backend/db/queries/activities"
-import { insertNotification } from "@/backend/db/queries/notifications"
+import { insertNotification, hasNotification } from "@/backend/db/queries/notifications"
+import { getUsersByCollege } from "@/backend/db/queries/friends"
 import type { getUserRowById } from "@/backend/db/queries/users"
 
 type UserRow = NonNullable<Awaited<ReturnType<typeof getUserRowById>>>
@@ -71,4 +72,63 @@ export async function recordShowcaseLike(userId: string, showcaseId: string, sho
     referenceId: showcaseId,
     referenceType: "showcase",
   })
+}
+
+export async function notifyFriendRequest(addresseeId: string, requester: UserRow) {
+  await insertNotification({
+    userId: addresseeId,
+    type: "friend_request",
+    title: `${requester.name} sent you a friend request`,
+    description: requester.college ? `From ${requester.college}` : undefined,
+    referenceId: requester.id,
+    referenceType: "user",
+  })
+}
+
+export async function notifyFriendAccepted(requesterId: string, accepter: UserRow) {
+  await insertNotification({
+    userId: requesterId,
+    type: "friend_accepted",
+    title: `${accepter.name} accepted your friend request`,
+    referenceId: accepter.id,
+    referenceType: "user",
+  })
+  await insertActivity({
+    userId: requesterId,
+    type: "added_friend",
+    description: `Became friends with ${accepter.name}`,
+    referenceId: accepter.id,
+    referenceType: "user",
+  })
+  await insertActivity({
+    userId: accepter.id,
+    type: "added_friend",
+    description: `Became friends with ${requesterId}`,
+    referenceId: requesterId,
+    referenceType: "user",
+  })
+}
+
+/**
+ * When a user sets/changes their college, let existing students at that same
+ * college know someone new joined from their school — the entry point into
+ * Team Up's "Find Members" tab where they can send a friend request.
+ */
+export async function notifyCollegeMatches(user: UserRow) {
+  if (!user.college) return
+  const matches = await getUsersByCollege(user.college, user.id)
+
+  for (const match of matches) {
+    const alreadyNotified = await hasNotification(match.id, "teammate_suggestion", user.id)
+    if (alreadyNotified) continue
+
+    await insertNotification({
+      userId: match.id,
+      type: "teammate_suggestion",
+      title: `${user.name} joined Vijeta from ${user.college}`,
+      description: "Say hello in Team Up → Find Members",
+      referenceId: user.id,
+      referenceType: "college_match",
+    })
+  }
 }

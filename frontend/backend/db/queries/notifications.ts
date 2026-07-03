@@ -32,3 +32,30 @@ export async function markNotificationRead(id: number, userId: string): Promise<
     .returning()
   return rows.length > 0
 }
+
+export async function getUnreadCount(userId: string): Promise<number> {
+  const rows = await db
+    .select()
+    .from(notifications)
+    .where(and(eq(notifications.userId, userId), eq(notifications.isRead, false)))
+  return rows.length
+}
+
+export async function hasNotification(
+  userId: string,
+  type: NotificationType,
+  referenceId: string,
+): Promise<boolean> {
+  const [row] = await db
+    .select()
+    .from(notifications)
+    .where(
+      and(
+        eq(notifications.userId, userId),
+        eq(notifications.type, type),
+        eq(notifications.referenceId, referenceId),
+      ),
+    )
+    .limit(1)
+  return !!row
+}

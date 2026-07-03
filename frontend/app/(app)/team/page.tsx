@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, useEffect } from "react"
+import { useState, useMemo, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
 import { Users, Plus, Navigation } from "lucide-react"
 import { TeamCard } from "@/components/shared/TeamCard"
@@ -9,8 +9,14 @@ import { SearchBar } from "@/components/shared/SearchBar"
 import { NearbyMap } from "@/components/shared/NearbyMap"
 import { CreateTeamModal } from "@/components/shared/CreateTeamModal"
 import type { Team, Student, Opportunity } from "@/types"
+import type { FriendStatus } from "@/backend/db/queries/friends"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+
+interface PendingRequestDTO {
+  id: number
+  student: Student
+}
 
 const tabs = ["Open Teams", "Find Members", "Nearby Map"]
 
@@ -50,6 +56,9 @@ export default function TeamPage() {
   const [students, setStudents] = useState<Student[]>([])
   const [opportunities, setOpportunities] = useState<Opportunity[]>([])
   const [loading, setLoading] = useState(true)
+  const [meId, setMeId] = useState<string | null>(null)
+  const [friendStatusMap, setFriendStatusMap] = useState<Record<string, FriendStatus>>({})
+  const [incomingIdMap, setIncomingIdMap] = useState<Record<string, number>>({})
 
   useEffect(() => {
     const hash = window.location.hash.replace("#", "")
@@ -62,18 +71,78 @@ export default function TeamPage() {
       fetch("/api/teams").then((res) => res.json()),
       fetch("/api/users").then((res) => res.json()),
       fetch("/api/opportunities").then((res) => res.json()),
+      fetch("/api/users/me").then((res) => res.json()),
     ])
-      .then(([teamsData, usersData, oppsData]) => {
+      .then(([teamsData, usersData, oppsData, me]) => {
         setTeamsList(teamsData)
         setStudents(usersData)
         setOpportunities(oppsData)
+        setMeId(me.id)
       })
       .finally(() => setLoading(false))
   }, [])
 
+  const refreshFriends = useCallback(() => {
+    fetch("/api/friends")
+      .then((res) => res.json())
+      .then((data: { friends: Student[]; incoming: PendingRequestDTO[]; outgoing: PendingRequestDTO[] }) => {
+        const map: Record<string, FriendStatus> = {}
+        const incMap: Record<string, number> = {}
+        data.friends.forEach((s) => { map[s.id] = "friends" })
+        data.outgoing.forEach((p) => { map[p.student.id] = "pending_outgoing" })
+        data.incoming.forEach((p) => { map[p.student.id] = "pending_incoming"; incMap[p.student.id] = p.id })
+        setFriendStatusMap(map)
+        setIncomingIdMap(incMap)
+      })
+  }, [])
+
+  useEffect(() => {
+    refreshFriends()
+  }, [refreshFriends])
+
+  const handleSendRequest = async (studentId: string) => {
+    setFriendStatusMap((prev) => ({ ...prev, [studentId]: "pending_outgoing" }))
+    const res = await fetch("/api/friends", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ addresseeId: studentId }),
+    })
+    if (res.ok) {
+      const friendship = await res.json()
+      setFriendStatusMap((prev) => ({
+        ...prev,
+        [studentId]: friendship.status === "accepted" ? "friends" : "pending_outgoing",
+      }))
+    }
+  }
+
+  const handleAccept = async (studentId: string) => {
+    const friendshipId = incomingIdMap[studentId]
+    if (!friendshipId) return
+    const res = await fetch(`/api/friends/${friendshipId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "accept" }),
+    })
+    if (res.ok) setFriendStatusMap((prev) => ({ ...prev, [studentId]: "friends" }))
+  }
+
+  const handleDecline = async (studentId: string) => {
+    const friendshipId = incomingIdMap[studentId]
+    if (!friendshipId) return
+    const res = await fetch(`/api/friends/${friendshipId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "reject" }),
+    })
+    if (res.ok) setFriendStatusMap((prev) => ({ ...prev, [studentId]: "none" }))
+  }
+
   const currentFilter = locationFilters.find((f) => f.key === activeLocation)!
 
   const filteredStudents = students.filter(
+    (s) => s.id !== meId,
+  ).filter(
     (s) =>
       (!search ||
         s.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -185,7 +254,13 @@ export default function TeamPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
               >
-                <StudentCard student={student} />
+                <StudentCard
+                  student={student}
+                  friendStatus={friendStatusMap[student.id] ?? "none"}
+                  onSendRequest={handleSendRequest}
+                  onAccept={handleAccept}
+                  onDecline={handleDecline}
+                />
               </motion.div>
             ))}
           </div>

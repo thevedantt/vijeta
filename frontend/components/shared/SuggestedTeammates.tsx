@@ -2,18 +2,18 @@
 
 import { motion } from "framer-motion"
 import { MapPin, UserPlus } from "lucide-react"
-import { students } from "@/lib/data/students"
+import type { Student } from "@/types"
 
-function getCompatibility(student: (typeof students)[0]): number {
+function getCompatibility(): number {
   return 65 + Math.floor(Math.random() * 30)
 }
 
-function getDistance(student: (typeof students)[0]): string {
+function getDistance(): string {
   const distances = ["0.3 km", "0.8 km", "1.2 km", "1.8 km", "2.5 km", "3.1 km", "4.0 km", "5.5 km"]
   return distances[Math.floor(Math.random() * distances.length)]
 }
 
-export function SuggestedTeammates() {
+export function SuggestedTeammates({ students }: { students: Student[] }) {
   const suggestions = students.slice(0, 8)
 
   return (
@@ -27,7 +27,7 @@ export function SuggestedTeammates() {
 
       <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
         {suggestions.map((student, i) => {
-          const compatibility = getCompatibility(student)
+          const compatibility = getCompatibility()
           return (
             <motion.div
               key={student.id}
@@ -47,7 +47,7 @@ export function SuggestedTeammates() {
                   <p className="text-[10px] text-[var(--v-muted)] truncate">{student.college}</p>
                   <div className="flex items-center gap-1 mt-0.5">
                     <MapPin className="w-2.5 h-2.5 text-[var(--v-muted)]" />
-                    <span className="text-[10px] text-[var(--v-muted)]">{getDistance(student)}</span>
+                    <span className="text-[10px] text-[var(--v-muted)]">{getDistance()}</span>
                   </div>
                 </div>
               </div>

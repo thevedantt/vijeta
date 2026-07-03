@@ -26,6 +26,7 @@ interface DashboardData {
   deadlines: Opportunity[]
   activeTeams: Team[]
   recommended: Opportunity[]
+  unreadNotifications: number
 }
 
 const DEADLINE_COLORS = ["#5D7B3D", "#E4568B", "#F6C94D"]
@@ -196,7 +197,9 @@ export default function DashboardPage() {
           </div>
           <Link href="/activity#notifications" className="relative w-9 h-9 rounded-xl border border-[var(--v-border)] bg-[var(--v-card)] flex items-center justify-center hover-bg-v-hover transition-colors shadow-sm">
             <Bell className="w-4 h-4 text-[var(--v-muted)]" />
-            <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#E4568B]" />
+            {(data?.unreadNotifications ?? 0) > 0 && (
+              <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#E4568B]" />
+            )}
           </Link>
         </div>
       </motion.div>

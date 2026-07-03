@@ -2,8 +2,9 @@
 
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { MapPin, Code2, Briefcase, Globe, Trophy, MessageCircle } from "lucide-react"
+import { MapPin, Code2, Briefcase, Globe, Trophy, UserPlus, Check, X, Clock, Users } from "lucide-react"
 import { Student } from "@/types"
+import type { FriendStatus } from "@/backend/db/queries/friends"
 
 const badgeColors: Record<string, { bg: string; text: string }> = {
   green: { bg: "#5D7B3D10", text: "#5D7B3D" },
@@ -15,9 +16,26 @@ const badgeColors: Record<string, { bg: string; text: string }> = {
 interface StudentCardProps {
   student: Student
   compact?: boolean
+  friendStatus?: FriendStatus
+  onSendRequest?: (studentId: string) => void
+  onAccept?: (studentId: string) => void
+  onDecline?: (studentId: string) => void
 }
 
-export function StudentCard({ student, compact }: StudentCardProps) {
+export function StudentCard({
+  student,
+  compact,
+  friendStatus,
+  onSendRequest,
+  onAccept,
+  onDecline,
+}: StudentCardProps) {
+  const stop = (e: React.MouseEvent, fn?: () => void) => {
+    e.preventDefault()
+    e.stopPropagation()
+    fn?.()
+  }
+
   return (
     <Link href={`/profile/${student.id}`}>
       <motion.div
@@ -103,6 +121,45 @@ export function StudentCard({ student, compact }: StudentCardProps) {
           )}
         </div>
         </div>
+
+        {friendStatus && (
+          <div className="mt-3 pt-3 border-t border-[var(--v-border)]">
+            {friendStatus === "none" && (
+              <button
+                onClick={(e) => stop(e, () => onSendRequest?.(student.id))}
+                className="w-full flex items-center justify-center gap-1.5 h-8 rounded-lg bg-[#5D7B3D]/10 text-[#5D7B3D] text-xs font-semibold hover:bg-[#5D7B3D]/20 transition-colors"
+              >
+                <UserPlus className="w-3.5 h-3.5" /> Add Friend
+              </button>
+            )}
+            {friendStatus === "pending_outgoing" && (
+              <div className="w-full flex items-center justify-center gap-1.5 h-8 rounded-lg bg-[var(--v-bg-secondary)] text-[var(--v-muted)] text-xs font-semibold">
+                <Clock className="w-3.5 h-3.5" /> Requested
+              </div>
+            )}
+            {friendStatus === "pending_incoming" && (
+              <div className="flex gap-2">
+                <button
+                  onClick={(e) => stop(e, () => onAccept?.(student.id))}
+                  className="flex-1 flex items-center justify-center gap-1.5 h-8 rounded-lg bg-[#5D7B3D] text-white text-xs font-semibold hover:bg-[#4a6230] transition-colors"
+                >
+                  <Check className="w-3.5 h-3.5" /> Accept
+                </button>
+                <button
+                  onClick={(e) => stop(e, () => onDecline?.(student.id))}
+                  className="flex-1 flex items-center justify-center gap-1.5 h-8 rounded-lg bg-[var(--v-bg-secondary)] text-[var(--v-muted)] text-xs font-semibold hover:text-[#E4568B] transition-colors"
+                >
+                  <X className="w-3.5 h-3.5" /> Decline
+                </button>
+              </div>
+            )}
+            {friendStatus === "friends" && (
+              <div className="w-full flex items-center justify-center gap-1.5 h-8 rounded-lg bg-[#5D7B3D]/10 text-[#5D7B3D] text-xs font-semibold">
+                <Users className="w-3.5 h-3.5" /> Friends
+              </div>
+            )}
+          </div>
+        )}
       </motion.div>
     </Link>
   )

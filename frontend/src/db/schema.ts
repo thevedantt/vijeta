@@ -11,6 +11,7 @@ import {
   serial,
   text,
   timestamp,
+  uniqueIndex,
 } from "drizzle-orm/pg-core"
 
 export const opportunityTypeEnum = pgEnum("opportunity_type", [
@@ -50,12 +51,17 @@ export const notificationTypeEnum = pgEnum("notification_type", [
   "team_invite", "application_received", "application_accepted",
   "application_rejected", "new_message", "deadline_reminder",
   "opportunity_match", "teammate_suggestion", "showcase_like",
+  "friend_request", "friend_accepted",
 ])
 
 export const activityTypeEnum = pgEnum("activity_type", [
   "saved_opportunity", "joined_team", "created_team", "applied_team",
   "submitted_project", "won_competition", "earned_badge", "updated_profile",
-  "connected_mentor", "showcase_liked", "showcase_viewed",
+  "connected_mentor", "showcase_liked", "showcase_viewed", "added_friend",
+])
+
+export const friendshipStatusEnum = pgEnum("friendship_status", [
+  "pending", "accepted", "rejected",
 ])
 
 /* ------------------------------------------------------------------ */
@@ -171,6 +177,29 @@ export const bookmarks = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [primaryKey({ columns: [t.userId, t.opportunityId] })],
+)
+
+/* ------------------------------------------------------------------ */
+/*  FRIENDSHIPS                                                        */
+/* ------------------------------------------------------------------ */
+export const friendships = pgTable(
+  "friendships",
+  {
+    id: serial("id").primaryKey(),
+    requesterId: text("requester_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    addresseeId: text("addressee_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    status: friendshipStatusEnum("status").default("pending").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("friendship_pair_idx").on(t.requesterId, t.addresseeId),
+    index("friendship_addressee_idx").on(t.addresseeId, t.status),
+  ],
 )
 
 /* ------------------------------------------------------------------ */
@@ -370,6 +399,7 @@ export const schema = defineRelations(
     opportunities,
     opportunityTags,
     bookmarks,
+    friendships,
     teams,
     teamMembers,
     teamApplications,
@@ -403,6 +433,18 @@ export const schema = defineRelations(
       }),
       userTags: h.many.userTags({ from: h.users.id, to: h.userTags.userId }),
       ledTeams: h.many.teams({ from: h.users.id, to: h.teams.leaderId }),
+      sentFriendRequests: h.many.friendships({
+        from: h.users.id,
+        to: h.friendships.requesterId,
+      }),
+      receivedFriendRequests: h.many.friendships({
+        from: h.users.id,
+        to: h.friendships.addresseeId,
+      }),
+    },
+    friendships: {
+      requester: h.one.users({ from: h.friendships.requesterId, to: h.users.id }),
+      addressee: h.one.users({ from: h.friendships.addresseeId, to: h.users.id }),
     },
     tags: {
       users: h.many.userTags({ from: h.tags.id, to: h.userTags.tagId }),

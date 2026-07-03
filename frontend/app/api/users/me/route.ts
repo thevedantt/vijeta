@@ -1,4 +1,5 @@
 import { getOrCreateCurrentUser, getUserById, updateUser } from "@/backend/db/queries/users"
+import { notifyCollegeMatches } from "@/backend/services/activity"
 
 export async function GET() {
   const user = await getOrCreateCurrentUser()
@@ -13,7 +14,10 @@ export async function PATCH(request: Request) {
   if (!user) return new Response("Unauthorized", { status: 401 })
 
   const body = await request.json()
-  await updateUser(user.id, {
+  const collegeChanged =
+    typeof body.college === "string" && body.college.trim() !== "" && body.college !== user.college
+
+  const updated = await updateUser(user.id, {
     name: body.name,
     college: body.college,
     degree: body.degree,
@@ -29,6 +33,10 @@ export async function PATCH(request: Request) {
     currentOpportunity: body.currentOpportunity,
     preferences: body.preferences,
   })
+
+  if (collegeChanged) {
+    await notifyCollegeMatches(updated)
+  }
 
   const student = await getUserById(user.id)
   return Response.json(student)

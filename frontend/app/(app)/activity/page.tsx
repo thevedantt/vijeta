@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowRight, Check } from "lucide-react"
+import { cn } from "@/lib/utils"
 import {
   History,
   Compass,
@@ -38,6 +39,8 @@ interface NotificationRow {
   title: string
   description: string
   isRead: boolean
+  referenceId: string | null
+  referenceType: string | null
   createdAt: string
 }
 
@@ -63,8 +66,34 @@ const notificationMeta: Record<string, { icon: LucideIcon; color: string }> = {
   new_message: { icon: MessageSquare, color: "#4a90c0" },
   deadline_reminder: { icon: Calendar, color: "#b8922c" },
   opportunity_match: { icon: Compass, color: "#5D7B3D" },
-  teammate_suggestion: { icon: Bot, color: "#4a90c0" },
+  teammate_suggestion: { icon: UserPlus, color: "#4a90c0" },
   showcase_like: { icon: Eye, color: "#A7C7E4" },
+  friend_request: { icon: UserPlus, color: "#E4568B" },
+  friend_accepted: { icon: UserCheck, color: "#5D7B3D" },
+}
+
+function getNotificationHref(n: NotificationRow): string {
+  switch (n.type) {
+    case "friend_request":
+    case "friend_accepted":
+      return n.referenceId ? `/profile/${n.referenceId}` : "/team#find-members"
+    case "teammate_suggestion":
+      return "/team#find-members"
+    case "team_invite":
+    case "application_received":
+    case "application_accepted":
+    case "application_rejected":
+      return "/team"
+    case "new_message":
+      return "/chat"
+    case "deadline_reminder":
+    case "opportunity_match":
+      return "/discover"
+    case "showcase_like":
+      return "/showcase"
+    default:
+      return "/activity"
+  }
 }
 
 function timeAgo(iso: string): string {
@@ -252,42 +281,50 @@ export default function ActivityPage() {
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.15 + i * 0.04 }}
-                  className="bg-[var(--v-card)] rounded-2xl border border-[var(--v-border)] p-3.5 shadow-card hover:border-[var(--v-border)]/80 transition-colors"
                 >
-                  <div className="flex items-start gap-3">
-                    <div
-                      className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-                      style={{ backgroundColor: `${meta.color}15` }}
-                    >
-                      <meta.icon className="w-4 h-4" style={{ color: meta.color }} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <p className="text-sm font-semibold text-[var(--v-heading)]">{n.title}</p>
-                          <p className="text-xs text-[var(--v-body)] mt-0.5">{n.description}</p>
+                  <Link
+                    href={getNotificationHref(n)}
+                    onClick={() => { if (!n.isRead) markRead(n.id) }}
+                    className={cn(
+                      "block bg-[var(--v-card)] rounded-2xl border p-3.5 shadow-card hover:border-[#5D7B3D]/40 transition-colors",
+                      !n.isRead ? "border-[#5D7B3D]/30" : "border-[var(--v-border)]",
+                    )}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="relative flex-shrink-0 mt-0.5">
+                        <div
+                          className="w-9 h-9 rounded-xl flex items-center justify-center"
+                          style={{ backgroundColor: `${meta.color}15` }}
+                        >
+                          <meta.icon className="w-4 h-4" style={{ color: meta.color }} />
                         </div>
+                        {!n.isRead && (
+                          <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#E4568B] border-2 border-[var(--v-card)]" />
+                        )}
                       </div>
-                      <div className="flex items-center justify-between mt-1.5">
-                        <span className="text-[10px] text-[var(--v-muted)]">{timeAgo(n.createdAt)}</span>
-                        <div className="flex items-center gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <p className="text-sm font-semibold text-[var(--v-heading)]">{n.title}</p>
+                            <p className="text-xs text-[var(--v-body)] mt-0.5">{n.description}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between mt-1.5">
+                          <span className="text-[10px] text-[var(--v-muted)]">{timeAgo(n.createdAt)}</span>
                           {!n.isRead ? (
-                            <>
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#E4568B]" />
-                              <button
-                                onClick={() => markRead(n.id)}
-                                className="text-[10px] font-medium text-[#5D7B3D] hover:underline flex items-center gap-0.5"
-                              >
-                                <Check className="w-3 h-3" /> Mark read
-                              </button>
-                            </>
+                            <button
+                              onClick={(e) => { e.preventDefault(); e.stopPropagation(); markRead(n.id) }}
+                              className="text-[10px] font-medium text-[#5D7B3D] hover:underline flex items-center gap-0.5"
+                            >
+                              <Check className="w-3 h-3" /> Mark read
+                            </button>
                           ) : (
                             <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[var(--v-bg-secondary)] text-[var(--v-muted)]">Read</span>
                           )}
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 </motion.div>
                 )
               })}

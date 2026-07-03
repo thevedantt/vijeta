@@ -44,6 +44,7 @@ export function DashboardSidebar({ isOpen, onClose, collapsed, onToggleCollapse 
   const pathname = usePathname()
   const { user } = useUser()
   const [college, setCollege] = useState("")
+  const [unreadCount, setUnreadCount] = useState(0)
 
   useEffect(() => {
     onClose()
@@ -54,6 +55,12 @@ export function DashboardSidebar({ isOpen, onClose, collapsed, onToggleCollapse 
       .then((res) => (res.ok ? res.json() : null))
       .then((profile: { college?: string } | null) => setCollege(profile?.college ?? ""))
   }, [])
+
+  useEffect(() => {
+    fetch("/api/notifications")
+      .then((res) => (res.ok ? res.json() : []))
+      .then((notifs: { isRead: boolean }[]) => setUnreadCount(notifs.filter((n) => !n.isRead).length))
+  }, [pathname])
 
   const displayName = user?.fullName ?? "Loading..."
   const avatarUrl = user?.imageUrl ?? "https://api.dicebear.com/9.x/avataaars/svg?seed=Vijeta"
@@ -251,8 +258,11 @@ export function DashboardSidebar({ isOpen, onClose, collapsed, onToggleCollapse 
                   <p className="text-sm font-medium text-[var(--v-heading)] truncate">{displayName}</p>
                   <p className="text-xs text-[var(--v-muted)] truncate">{college}</p>
                 </div>
-                <Link href="/activity#notifications" className="w-8 h-8 rounded-lg hover-bg-v-hover flex items-center justify-center transition-colors">
+                <Link href="/activity#notifications" className="relative w-8 h-8 rounded-lg hover-bg-v-hover flex items-center justify-center transition-colors">
                   <Bell className="w-4 h-4 text-[var(--v-muted)]" />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#E4568B] border border-[var(--v-card)]" />
+                  )}
                 </Link>
               </>
             )}
