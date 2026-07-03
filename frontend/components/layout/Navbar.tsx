@@ -26,7 +26,8 @@ export function Navbar() {
     pathname.startsWith("/team") ||
     pathname.startsWith("/profile") ||
     pathname.startsWith("/settings") ||
-    pathname.startsWith("/opportunity")
+    pathname.startsWith("/opportunity") ||
+    pathname.startsWith("/showcase")
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20)
@@ -48,10 +49,8 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-[#5D7B3D] flex items-center justify-center">
-              <Zap className="w-4 h-4 text-white fill-white" />
-            </div>
-            <span className="text-xl font-bold text-[var(--v-heading)]">Vijeta</span>
+            <img src="/vijeta.png" alt="विजेता" className="w-8 h-8 rounded-lg" />
+            <span className="text-xl font-bold text-[var(--v-heading)]">विजेता</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">

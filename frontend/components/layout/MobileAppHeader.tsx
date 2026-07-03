@@ -18,7 +18,7 @@ export function MobileAppHeader({ onMenuClick }: MobileAppHeaderProps) {
         >
           <Menu className="w-5 h-5 text-[var(--v-heading)]" />
         </button>
-        <span className="text-base font-bold text-[var(--v-heading)]">Vijeta</span>
+        <span className="text-base font-bold text-[var(--v-heading)]">विजेता</span>
       </div>
       <ThemeToggle />
     </div>

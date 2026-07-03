@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Zap, Code2, AtSign, Briefcase, Camera } from "lucide-react"
+import { Code2, AtSign, Briefcase, Camera } from "lucide-react"
 
 const footerLinks = {
   Product: [
@@ -39,10 +39,8 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-[#5D7B3D] flex items-center justify-center">
-                <Zap className="w-4 h-4 text-white fill-white" />
-              </div>
-              <span className="text-xl font-bold">Vijeta</span>
+              <img src="/vijeta.png" alt="विजेता" className="w-8 h-8 rounded-lg" />
+              <span className="text-xl font-bold">विजेता</span>
             </Link>
             <p className="text-[#8B93A7] text-sm leading-relaxed max-w-xs mb-6">
               The operating system for ambitious Indian students. Discover opportunities, build great teams, win competitions, and pay it forward.
@@ -82,13 +80,12 @@ export function Footer() {
 
         <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-[#8B93A7]">
-            © 2025 Vijeta. Built for ambitious Indian students. 🇮🇳
+            © 2025 विजेता. Built for ambitious Indian students. 🇮🇳
           </p>
           <p className="text-sm text-[#8B93A7]">
             Made with love in India
           </p>
-        </div>
-      </div>
+        </div>      </div>
     </footer>
   )
 }

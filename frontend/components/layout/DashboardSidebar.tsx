@@ -23,6 +23,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ThemeToggle } from "@/components/theme/ThemeToggle"
+import { subscribeConversations } from "@/lib/firestore/chat"
 
 const navItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -62,6 +63,23 @@ export function DashboardSidebar({ isOpen, onClose, collapsed, onToggleCollapse 
       .then((notifs: { isRead: boolean }[]) => setUnreadCount(notifs.filter((n) => !n.isRead).length))
   }, [pathname])
 
+  const [chatUnread, setChatUnread] = useState(0)
+  const [neonId, setNeonId] = useState<string | null>(null)
+  useEffect(() => {
+    fetch("/api/users/me")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((profile: { id: string } | null) => setNeonId(profile?.id ?? null))
+  }, [])
+  useEffect(() => {
+    if (!neonId) return
+    const unsub = subscribeConversations(neonId, (convs) => {
+      let total = 0
+      for (const c of convs) total += (c.unread[neonId] ?? 0)
+      setChatUnread(total)
+    })
+    return unsub
+  }, [neonId])
+
   const displayName = user?.fullName ?? "Loading..."
   const avatarUrl = user?.imageUrl ?? "https://api.dicebear.com/9.x/avataaars/svg?seed=Vijeta"
 
@@ -88,9 +106,7 @@ export function DashboardSidebar({ isOpen, onClose, collapsed, onToggleCollapse 
         )}>
           {collapsed ? (
             <>
-              <div className="w-8 h-8 rounded-lg bg-[#5D7B3D] flex items-center justify-center flex-shrink-0">
-                <Zap className="w-4 h-4 text-white fill-white" />
-              </div>
+              <img src="/vijeta.png" alt="विजेता" className="w-8 h-8 rounded-lg flex-shrink-0" />
               <button
                 onClick={onToggleCollapse}
                 className="w-7 h-7 rounded-lg hover-bg-v-hover flex items-center justify-center"
@@ -102,10 +118,8 @@ export function DashboardSidebar({ isOpen, onClose, collapsed, onToggleCollapse 
           ) : (
             <>
               <Link href="/" className="flex items-center gap-2 min-w-0">
-                <div className="w-8 h-8 rounded-lg bg-[#5D7B3D] flex items-center justify-center flex-shrink-0">
-                  <Zap className="w-4 h-4 text-white fill-white" />
-                </div>
-                <span className="text-lg font-bold text-[var(--v-heading)]">Vijeta</span>
+                <img src="/vijeta.png" alt="विजेता" className="w-8 h-8 rounded-lg flex-shrink-0" />
+                <span className="text-lg font-bold text-[var(--v-heading)]">विजेता</span>
               </Link>
               <div className="flex items-center gap-1">
                 <button
@@ -192,7 +206,7 @@ export function DashboardSidebar({ isOpen, onClose, collapsed, onToggleCollapse 
           <Link
             href="/chat"
             className={cn(
-              "flex items-center rounded-xl transition-all duration-150",
+              "flex items-center rounded-xl transition-all duration-150 relative",
               collapsed
                 ? "justify-center w-12 h-12 mx-auto"
                 : "gap-3 px-3 py-2.5 text-sm font-medium",
@@ -202,10 +216,22 @@ export function DashboardSidebar({ isOpen, onClose, collapsed, onToggleCollapse 
             )}
             title={collapsed ? "Chat" : undefined}
           >
-            <MessageCircle className={cn("w-4 h-4 flex-shrink-0", pathname === "/chat" ? "text-white" : "text-[var(--v-muted)]")} />
+            <span className="relative">
+              <MessageCircle className={cn("w-4 h-4 flex-shrink-0", pathname === "/chat" ? "text-white" : "text-[var(--v-muted)]")} />
+              {chatUnread > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 w-2 h-2 rounded-full bg-[#E4568B] border border-[var(--v-card)]" />
+              )}
+            </span>
             {!collapsed && (
               <>
-                Chat
+                <span className="flex items-center gap-2">
+                  Chat
+                  {chatUnread > 0 && (
+                    <span className="text-[10px] font-bold text-white bg-[#E4568B] rounded-full px-1.5 py-0.5 leading-none">
+                      {chatUnread > 99 ? "99+" : chatUnread}
+                    </span>
+                  )}
+                </span>
                 {pathname === "/chat" && <ChevronRight className="w-3 h-3 ml-auto text-white/70" />}
               </>
             )}

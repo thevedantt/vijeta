@@ -30,7 +30,7 @@ export function Testimonials() {
             Real students. Real wins.
           </h2>
           <p className="text-lg text-[var(--v-body)] max-w-2xl mx-auto">
-            Hear from students who discovered, competed, and won on Vijeta.
+            Hear from students who discovered, competed, and won on विजेता.
           </p>
         </motion.div>
 
