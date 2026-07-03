@@ -2,7 +2,7 @@
   <img src="frontend/public/banner.png" alt="Vijeta Banner" width="100%" />
 </p>
 
-<h1 align="center">Vijeta</h1>
+<h1 align="center">"..विजेता.."</h1>
 <h3 align="center">The Operating System for Ambitious Students</h3>
 
 <p align="center">
@@ -409,19 +409,6 @@ Vijeta is an open-source platform built for students, by students. Contributions
 
 ---
 
-## 📬 Connect
-
-| | |
-|---|---|
-| **Creator** | [Vedant Talekar](https://github.com/vedanttalekar) |
-| **Product Docs** | [PRD.md](PRD.md), [DESGIN.md](DESGIN.md), [flow.md](flow.md), [tech.md](tech.md) |
-
----
-
-
-<p align="center">
-  Built with ❤️ by <a href="https://github.com/vedanttalekar">Vedant Talekar</a>
-</p>
-<p align="center">
-  <strong>Vijeta</strong> — वैजेत (Victory)
+<p>
+  <strong>Vijeta</strong> — विजेता (Victory)
 </p>
