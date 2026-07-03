@@ -6,49 +6,160 @@
 <h3 align="center">The Operating System for Ambitious Students</h3>
 
 <p align="center">
-  Discover opportunities. Build with great teammates. Win competitions. Guide the next generation.
+  <strong>विजेता</strong> — One who conquers. One who wins.
 </p>
 
 <p align="center">
-  <a href="#features">Features</a> •
-  <a href="#tech-stack">Tech Stack</a> •
-  <a href="#architecture">Architecture</a> •
-  <a href="#getting-started">Getting Started</a> •
-  <a href="#project-structure">Project Structure</a>
+  <a href="https://vijeta.vercel.app">🌐 Live Demo</a> •
+  <a href="#-the-problem">Problem</a> •
+  <a href="#-solution">Solution</a> •
+  <a href="#-features">Features</a> •
+  <a href="#-tech-stack">Tech Stack</a> •
+  <a href="#-getting-started">Get Started</a>
+</p>
+
+<p align="center">
+  <i>Every year thousands of talented students never participate in scholarships, hackathons, and competitions — not because they lack ability, but because they don't know where to start, can't find teammates, or don't have proper guidance.</i>
+</p>
+
+<p align="center">
+  <b>Vijeta removes every barrier between "I want to participate" and "I became a winner."</b>
 </p>
 
 ---
 
-Every year, thousands of talented students never participate in scholarships, hackathons, and competitions — not because they lack ability, but because they don't know where to start, can't find teammates, or lack proper guidance.
+## 📋 Table of Contents
 
-**Vijeta removes every barrier between "I want to participate" and "I became a winner."**
-
-Winning should not be the end of the journey. Every winner creates resources that help produce the next generation of winners — a self-sustaining ecosystem of excellence.
+- [The Problem](#-the-problem)
+- [Solution](#-solution)
+- [How It Works](#-how-it-works)
+- [Features](#-features)
+- [Why Vijeta?](#-why-vijeta)
+- [Tech Stack](#-tech-stack)
+- [Architecture](#-architecture)
+- [Use Cases](#-use-cases)
+- [Getting Started](#-getting-started)
+- [Project Structure](#-project-structure)
+- [Documentation](#-documentation)
+- [Roadmap](#%EF%B8%8F-roadmap)
+- [Contributing](#-contributing)
 
 ---
 
-## 🎯 The Flywheel
+## 🔥 The Problem
+
+Today, Indian students face five critical barriers that prevent them from reaching their full potential:
+
+### 1. 🔍 Discovery is Broken
+Relevant opportunities — hackathons, scholarships, competitions, fellowships — are scattered across dozens of websites, WhatsApp groups, and Instagram posts. Students miss deadlines simply because they never knew the opportunity existed.
+
+### 2. 👥 Team Formation is a Wall
+Most students skip competitions not because they lack skill, but because they cannot find teammates. There is no platform to discover peers with complementary skills who are looking for a team.
+
+### 3. 📚 Guidance is Invisible
+Even after finding an opportunity, students don't know where to begin — what previous winners built, how judging works, what resources are useful. The hard-earned knowledge of past winners evaporates after every competition.
+
+### 4. 🚪 Participation Feels Exclusive
+Students believe "I don't know coding, so I can't participate." But competitions need designers, researchers, presenters, writers, marketers, video editors, and product managers. This misunderstanding locks out thousands of talented students.
+
+### 5. 🗑️ Knowledge Loss Every Cycle
+Every winning project disappears after the competition ends. Future students start from absolute zero. The same mistakes are repeated. The same lessons are re-learned. Year after year.
+
+---
+
+## 💡 Solution
+
+Vijeta creates **one continuous journey** that transforms a curious student into a published winner, and then into a mentor who guides the next generation.
 
 ```
-Discover → Team Up → Learn → Build → Compete → Win → Publish → Mentor → Repeat
+              ┌─────────────────────────────────────┐
+              │                                     │
+              ▼                                     │
+    ┌─────────────┐    ┌─────────┐    ┌─────────┐  │
+    │  DISCOVER   │───▶│ TEAM UP │───▶│  LEARN  │  │
+    └─────────────┘    └─────────┘    └─────────┘  │
+                                              │    │
+    ┌─────────────┐    ┌─────────┐    ┌─────────┘  │
+    │   MENTOR    │◀───│ PUBLISH │◀───│  BUILD   │  │
+    └─────────────┘    └─────────┘    └─────────┘  │
+         │                                          │
+         └──────────────────────────────────────────┘
+                     COMPETE & WIN
 ```
 
-Vijeta is built around a virtuous cycle that takes a student from discovery all the way to becoming a mentor for the next cohort.
+This isn't just a platform. It's a **self-sustaining ecosystem of excellence** where every winner automatically produces the resources that create the next generation of winners.
+
+---
+
+## 🎯 How It Works
+
+### The Pillars
+
+| Pillar | What It Does |
+|---|---|
+| **Discover** | A unified feed of hackathons, scholarships, competitions, fellowships, internships, and research — with smart filters, location-based search, and an interactive geographic map |
+| **Team Up** | Find teammates by skills, college, city, and availability. Create open teams with defined roles. Apply or invite. Built-in friend network |
+| **Guidance** | AI-powered mentorship through **Margdarshak** — a context-aware assistant that knows your profile, your stats, and the opportunity landscape. Slash commands like `/findhackathon`, `/mystats`, `/findteam` give instant answers |
+| **Build** | Real-time chat via Firebase for seamless team communication. Activity feed keeps everyone in sync |
+| **Showcase** | Publish winning projects with GitHub repos, live demos, and PPT decks. Every showcase becomes a learning resource for future students |
+| **Knowledge Loop** | Winners automatically become mentors. Their projects, insights, and paths are preserved. The next batch never starts from zero |
 
 ---
 
 ## ✨ Features
 
-| Feature | Description |
-|---|---|
-| **🔍 Discover** | Browse hackathons, scholarships, competitions, fellowships, internships, and research opportunities with smart filters, search, and an interactive map |
-| **👥 Team Up** | Find teammates by skills, location, and availability. Create or join open teams with defined roles |
-| **🤖 AI Assistant (Margdarshak)** | Context-aware AI mentor powered by Gemini & OpenRouter. Get personalized guidance via slash commands like `/findhackathon`, `/mystats`, `/findteam` |
-| **💬 Real-time Chat** | Direct messaging via Firebase Firestore for seamless team communication |
-| **🏆 Showcase** | Publish winning projects with GitHub, demo, and PPT links. Inspire the next generation |
-| **📊 Dashboard** | Personalized stats, upcoming deadlines, active teams, and AI-powered recommendations |
-| **🔔 Activity Feed** | Track every interaction — bookmarks, team invites, friend requests, and more |
-| **👤 Student Profiles** | Rich profiles with skills, badges, achievements, and availability status |
+### 🧠 AI-Powered Everything
+
+- **Margdarshak (मार्गदर्शक)** — The AI guide that knows your skills, your deadlines, your teams, and the entire opportunity database. Ask it anything.
+- **3 Modes**: Default (OpenRouter GPT), Mentor (Google Gemini — warm, concise, Hindi-friendly), and Debate (both AIs side-by-side for comparison)
+- **Slash Commands**: `/mystats`, `/findhackathon`, `/findteam`, `/suggest`, `/summarize`, `/compare`, `/recentactivity`
+
+### 🗺️ Discover Opportunities
+
+- Unified feed across 6 opportunity types: Hackathons, Scholarships, Competitions, Fellowships, Internships, Research
+- Filter by difficulty, type, location, remote/in-person, and tags
+- Interactive MapLibre GL map showing opportunities geographically
+- Bookmark and track deadlines with calendar popup
+
+### 👥 Smart Team Formation
+
+- Browse open teams or find individual members by skills and location
+- 19 distinct team roles: AI/ML Engineer, Frontend, Backend, Full Stack, UI/UX, Designer, Researcher, Presenter, Writer, Video Editor, Marketing, Project Manager, etc.
+- Role-based applications and invites
+- Friend network with request/accept/reject flow
+
+### 🏆 Winner Showcase
+
+- Permanent gallery of winning projects with metadata, tech stacks, team details
+- Search by year, college, tags, or category
+- GitHub, live demo, and presentation links
+- Like and engage with winning projects
+
+### 📊 Personalized Dashboard
+
+- Stats: saved opportunities, active teams, wins, profile views
+- Upcoming deadlines with calendar view
+- Active teams snapshot
+- AI-powered opportunity recommendations
+- Friend activity and notifications
+
+### 💬 Real-time Communication
+
+- Firebase Firestore-powered direct messaging
+- Conversation list with unread counts and timestamps
+- Cross-platform — works seamlessly across devices
+
+---
+
+## 🏅 Why Vijeta?
+
+| | Traditional Approach | Vijeta |
+|---|---|---|
+| **Discovery** | Scattered across websites, groups, DMs | **Unified feed** with smart filters + map |
+| **Teammates** | Luck or college WhatsApp groups | **Skill-based matching** with role system |
+| **Guidance** | Non-existent after the event ends | **AI mentor** that knows you + previous winners |
+| **Knowledge** | Lost after every competition | **Permanent showcase** + mentorship loop |
+| **Inclusivity** | "I don't code" = "I can't participate" | **19 roles** — everyone belongs |
 
 ---
 
@@ -120,6 +231,51 @@ Browser
         └── MapLibre GL     → Geographic opportunity map
 ```
 
+### Data Model (16 Tables)
+
+```
+users ───┬── opportunities ───┬── bookmarks
+          │                   └── opportunity_tags
+          ├── teams ─────┬───── team_members
+          │              ├───── team_applications
+          │              └───── team_tags
+          ├── showcases ─┬───── showcase_likes
+          │              └───── showcase_tags
+          ├── friendships
+          ├── activities
+          ├── notifications
+          ├── tags ───────┬── user_tags
+          └── mentors
+```
+
+---
+
+## 🎬 Use Cases
+
+### 👨‍🎓 For Students
+
+> *"I'm a second-year CS student who wants to participate in SIH but have no team. What do I do?"*
+
+1. Sign up on Vijeta, set your skills (Frontend, UI/UX)
+2. Browse open teams looking for a Frontend dev
+3. Apply to 3 teams, get accepted by one
+4. Use Margdarshak AI to understand SIH problem statements
+5. Chat with your team in real-time
+6. Win → Publish your project on Showcase
+7. Next year: become a mentor for new students
+
+### 🏫 For Colleges
+
+> *"We want our students to know about every opportunity and win consistently."*
+
+Vijeta provides a unified view of student participation, wins, and active teams across your institution. Track your college's standing and celebrate wins publicly.
+
+### 🏢 For Organizers
+
+> *"We run a national hackathon and want maximum participation from quality teams."*
+
+List your opportunity on Vijeta to reach India's most ambitious students — pre-filtered by skills, ready with teams, and backed by a track record of wins.
+
 ---
 
 ## 🚀 Getting Started
@@ -130,6 +286,8 @@ Browser
 - **PostgreSQL** (Neon account or local instance)
 - **Firebase** project (for real-time chat)
 - **Clerk** account (for authentication)
+- **OpenRouter** API key (for AI features)
+- **Google Gemini** API key (for mentor mode)
 
 ### Installation
 
@@ -138,25 +296,37 @@ Browser
 git clone https://github.com/vedanttalekar/vijeta.git
 cd vijeta
 
-# Install dependencies
+# Install frontend dependencies
 cd frontend
 npm install
 
-# Set up environment variables
+# Configure environment
 cp .env.example .env.local
-# Fill in your Clerk, Neon, Firebase, Gemini, and OpenRouter keys
+```
 
-# Push database schema
+Fill in your `.env.local` with the following:
+
+| Variable | Description |
+|---|---|
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk Publishable Key |
+| `CLERK_SECRET_KEY` | Clerk Secret Key |
+| `DATABASE_URL` | Neon PostgreSQL connection string |
+| `NEXT_PUBLIC_FIREBASE_*` | Firebase project config |
+| `GEMINI_API_KEY` | Google Gemini API key |
+| `OPENROUTER_API_KEY` | OpenRouter API key |
+
+```bash
+# Push the database schema
 npm run db:push
 
-# Seed the database (optional)
+# Seed with sample data (25+ students, 15+ opportunities, 8+ teams, 8+ showcases)
 npm run db:seed
 
-# Start development server
+# Start development
 npm run dev
 ```
 
-The app will be available at `http://localhost:3000`.
+Visit `http://localhost:3000` — you're in.
 
 ---
 
@@ -195,16 +365,65 @@ vijeta/
 
 | Document | Description |
 |---|---|
-| [PRD.md](PRD.md) | Product requirements, vision, problem statement, and MVP scope |
-| [DESGIN.md](DESGIN.md) | Complete design system — colors, typography, components, accessibility |
-| [flow.md](flow.md) | All product flows — auth, discover, team formation, AI, showcase |
-| [tech.md](tech.md) | Technical stack overview and architecture decisions |
+| [PRD.md](PRD.md) | Complete product requirements, vision, problem statement, and MVP scope (616 lines) |
+| [DESGIN.md](DESGIN.md) | Full design system — colors, typography, spacing, components, accessibility (867 lines) |
+| [flow.md](flow.md) | All product flows — auth, discover, team formation, AI assistant, showcase (574 lines) |
+| [tech.md](tech.md) | Technical stack overview and architecture decisions (175 lines) |
+
+---
+
+## 🗺️ Roadmap
+
+### ✅ MVP (Current)
+- [x] Opportunity discovery with filters & map
+- [x] Team formation with role system
+- [x] AI assistant (Margdarshak) with 3 modes
+- [x] Real-time chat & messaging
+- [x] Winner showcase gallery
+- [x] Student profiles & friend network
+- [x] Activity feed & notifications
+- [x] Personalized dashboard
+
+### 🚧 In Progress
+- [ ] Mentorship marketplace — connect winners with newcomers
+- [ ] Guided project builder with milestones
+- [ ] College leaderboards & inter-college competitions
+- [ ] Email/WhatsApp notifications for deadlines
+
+### 🔮 Future
+- [ ] Resume builder from your Vijeta activity
+- [ ] Interview prep with AI mock panels
+- [ ] Sponsor discovery & direct applications
+- [ ] Vijeta API for third-party integrations
+- [ ] Mobile app (React Native)
+
+---
+
+## 🤝 Contributing
+
+Vijeta is an open-source platform built for students, by students. Contributions of all kinds are welcome:
+
+- 🐛 **Found a bug?** Open an issue
+- 💡 **Have an idea?** Start a discussion
+- 🔧 **Want to contribute?** Fork the repo, create a branch, and submit a PR
+
+---
+
+## 📬 Connect
+
+| | |
+|---|---|
+| **Creator** | [Vedant Talekar](https://github.com/vedanttalekar) |
+| **Product Docs** | [PRD.md](PRD.md), [DESGIN.md](DESGIN.md), [flow.md](flow.md), [tech.md](tech.md) |
 
 ---
 
 <p align="center">
-  Built with ❤️ by <a href="https://github.com/vedanttalekar">Vedant Talekar</a>
+  <strong>Vijeta</strong> — विजेता — One who conquers.
 </p>
 <p align="center">
-  <strong>Vijeta</strong> — वैजेत (Victory)
+  <i>Winning should not be the end of the journey.<br>Every winner should create resources that help produce the next generation of winners.</i>
+</p>
+<p align="center">
+  <sub>Built with ❤️ for ambitious students across India</sub>
 </p>
