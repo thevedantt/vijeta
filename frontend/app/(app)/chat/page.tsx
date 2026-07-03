@@ -83,11 +83,45 @@ function ChatContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversations, meId])
 
+  // Search for users not yet in conversations.
+  const [searchUsers, setSearchUsers] = useState<Student[]>([])
+  const [searchingUsers, setSearchingUsers] = useState(false)
+  useEffect(() => {
+    if (!search.trim() || !meId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSearchUsers([])
+      return
+    }
+    const timer = setTimeout(() => {
+      setSearchingUsers(true)
+      fetch(`/api/users?search=${encodeURIComponent(search)}`)
+        .then((res) => res.json())
+        .then((users: Student[]) => {
+          setSearchUsers(users.filter((u) => u.id !== meId))
+        })
+        .finally(() => setSearchingUsers(false))
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [search, meId])
+
+  const handleStartConversation = useCallback(
+    async (userId: string) => {
+      const existing = await findDirectConversation(meId!, userId)
+      const chatId = existing ? existing.id! : await createConversation("direct", [meId!, userId])
+      setActiveConvId(chatId)
+      setShowMobileList(false)
+      setSearch("")
+      setSearchUsers([])
+    },
+    [meId],
+  )
+
   // Deep-link handling: ?conv=<id> or ?user=<id>.
   useEffect(() => {
     if (!meId) return
 
     if (convParam) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActiveConvId(convParam)
       setShowMobileList(false)
       return
@@ -101,12 +135,12 @@ function ChatContent() {
         setShowMobileList(false)
       })()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [meId, convParam, userIdParam])
 
   // Subscribe to messages for the active conversation.
   useEffect(() => {
     if (!activeConvId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMessages([])
       return
     }
@@ -143,7 +177,7 @@ function ChatContent() {
       const otherId = conv.participantIds.find((id) => id !== meId) || conv.participantIds[0]
       const student = studentsMap[otherId]
       if (!student) return ""
-      return availabilityMeta[student.availability ?? "Not Available"]?.label ?? ""
+      return availabilityMeta[student.availability ?? "Full-time"]?.label ?? ""
     },
     [meId, studentsMap],
   )
@@ -154,7 +188,7 @@ function ChatContent() {
       const otherId = conv.participantIds.find((id) => id !== meId) || conv.participantIds[0]
       const student = studentsMap[otherId]
       if (!student) return "#5D7B3D"
-      return availabilityMeta[student.availability ?? "Not Available"]?.color ?? "#A0A0A0"
+      return availabilityMeta[student.availability ?? "Full-time"]?.color ?? "#A0A0A0"
     },
     [meId, studentsMap],
   )
@@ -217,9 +251,7 @@ function ChatContent() {
         </div>
 
         <div className="flex-1 overflow-y-auto py-2">
-          {filteredConvs.length === 0 ? (
-            <p className="text-sm text-[var(--v-muted)] text-center py-8">No conversations found</p>
-          ) : (
+          {filteredConvs.length > 0 ? (
             filteredConvs.map((conv) => {
               const isActive = conv.id === activeConvId
               const name = getConversationName(conv)
@@ -242,8 +274,11 @@ function ChatContent() {
                     </div>
                   ) : (
                     <div className="relative flex-shrink-0">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={avatar} alt="" className="w-11 h-11 rounded-2xl bg-[var(--v-bg-secondary)] border border-[var(--v-border)]" />
+                      {avatar ? (
+                        <img src={avatar} alt="" className="w-11 h-11 rounded-2xl bg-[var(--v-bg-secondary)] border border-[var(--v-border)]" />
+                      ) : (
+                        <div className="w-11 h-11 rounded-2xl bg-[var(--v-bg-secondary)] border border-[var(--v-border)]" />
+                      )}
                       <div
                         className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-[var(--v-card)]"
                         style={{ backgroundColor: color }}
@@ -268,6 +303,36 @@ function ChatContent() {
                 </button>
               )
             })
+          ) : search.trim() && searchUsers.length === 0 ? (
+            searchingUsers ? (
+              <p className="text-sm text-[var(--v-muted)] text-center py-8">Searching...</p>
+            ) : (
+              <p className="text-sm text-[var(--v-muted)] text-center py-8">No conversations found</p>
+            )
+          ) : null}
+          {search.trim() && searchUsers.length > 0 && (
+            <>
+              <div className="px-4 py-2 text-[11px] font-semibold text-[var(--v-muted)] uppercase tracking-wider">
+                People
+              </div>
+              {searchUsers.map((user) => (
+                <button
+                  key={user.id}
+                  onClick={() => handleStartConversation(user.id)}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-[var(--v-bg-secondary)]"
+                >
+                  {user.avatar ? (
+                    <img src={user.avatar} alt="" className="w-11 h-11 rounded-2xl bg-[var(--v-bg-secondary)] border border-[var(--v-border)]" />
+                  ) : (
+                    <div className="w-11 h-11 rounded-2xl bg-[var(--v-bg-secondary)] border border-[var(--v-border)]" />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm font-semibold text-[var(--v-heading)] truncate block">{user.name}</span>
+                    <span className="text-xs text-[var(--v-muted)] truncate block">{user.college}</span>
+                  </div>
+                </button>
+              ))}
+            </>
           )}
         </div>
       </div>
@@ -302,14 +367,18 @@ function ChatContent() {
                 <div className="w-9 h-9 rounded-xl bg-[#5D7B3D]/15 flex items-center justify-center flex-shrink-0 border border-[#5D7B3D]/20">
                   <Users className="w-4 h-4 text-[#5D7B3D]" />
                 </div>
-              ) : (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={getConversationAvatar(activeConv)}
-                  alt=""
-                  className="w-9 h-9 rounded-xl flex-shrink-0 bg-[var(--v-bg-secondary)] border border-[var(--v-border)]"
-                />
-              )}
+              ) : (() => {
+                const hAvatar = getConversationAvatar(activeConv)
+                return hAvatar ? (
+                  <img
+                    src={hAvatar}
+                    alt=""
+                    className="w-9 h-9 rounded-xl flex-shrink-0 bg-[var(--v-bg-secondary)] border border-[var(--v-border)]"
+                  />
+                ) : (
+                  <div className="w-9 h-9 rounded-xl flex-shrink-0 bg-[var(--v-bg-secondary)] border border-[var(--v-border)]" />
+                )
+              })()}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-[var(--v-heading)] truncate">{getConversationName(activeConv)}</p>
                 <p className="text-[11px] text-[var(--v-muted)]">{getConversationStatus(activeConv)}</p>
@@ -339,10 +408,11 @@ function ChatContent() {
                     return (
                       <motion.div key={msg.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.15 }}>
                         <div className={cn("flex items-end gap-2 mb-3", isMe ? "flex-row-reverse" : "flex-row")}>
-                          {!isMe && (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={sender?.avatar || ""} alt="" className="w-7 h-7 rounded-full flex-shrink-0 bg-[var(--v-bg-secondary)]" />
-                          )}
+                          {!isMe && sender?.avatar ? (
+                            <img src={sender.avatar} alt="" className="w-7 h-7 rounded-full flex-shrink-0 bg-[var(--v-bg-secondary)]" />
+                          ) : !isMe ? (
+                            <div className="w-7 h-7 rounded-full flex-shrink-0 bg-[var(--v-bg-secondary)]" />
+                          ) : null}
                           <div className={cn("max-w-[75%]", isMe ? "items-end" : "items-start")}>
                             <div
                               className={cn(

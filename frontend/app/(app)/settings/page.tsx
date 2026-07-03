@@ -144,12 +144,15 @@ export default function SettingsPage() {
               <h2 className="font-bold text-[var(--v-heading)]">Profile Settings</h2>
 
               <div className="flex items-center gap-4">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={avatar}
-                  alt="Avatar"
-                  className="w-16 h-16 rounded-2xl border border-[var(--v-border)]"
-                />
+                {avatar ? (
+                  <img
+                    src={avatar}
+                    alt="Avatar"
+                    className="w-16 h-16 rounded-2xl border border-[var(--v-border)]"
+                  />
+                ) : (
+                  <div className="w-16 h-16 rounded-2xl border border-[var(--v-border)] bg-[var(--v-bg-secondary)]" />
+                )}
                 <Button variant="outline" size="sm" className="rounded-xl border-[var(--v-border)]">
                   Change Photo
                 </Button>
