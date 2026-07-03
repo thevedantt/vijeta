@@ -1,15 +1,31 @@
 "use client"
 
+import { useMemo } from "react"
 import { Map, MapMarker, MarkerContent, MarkerPopup, MapControls } from "@/components/ui/map"
 import { Student } from "@/types"
-import { Trophy, MapPin } from "lucide-react"
+import { Trophy, MapPin, User } from "lucide-react"
 import { cn } from "@/lib/utils"
+
+const cityCoords: Record<string, [number, number]> = {
+  Mumbai: [19.076, 72.8777],
+  "Navi Mumbai": [19.033, 73.029],
+  Pune: [18.52, 73.856],
+  Bangalore: [12.971, 77.594],
+  Delhi: [28.613, 77.209],
+  Chennai: [13.082, 80.275],
+  Hyderabad: [17.385, 78.486],
+  Ahmedabad: [23.022, 72.571],
+  Kolkata: [22.572, 88.363],
+  Jaipur: [26.912, 75.787],
+  Lucknow: [26.846, 80.946],
+}
 
 interface NearbyMapProps {
   students: Student[]
   center?: [number, number]
   zoom?: number
   className?: string
+  meId?: string | null
 }
 
 const badgeColors: Record<string, { bg: string; text: string }> = {
@@ -19,8 +35,11 @@ const badgeColors: Record<string, { bg: string; text: string }> = {
   blue: { bg: "#A7C7E420", text: "#4a90c0" },
 }
 
-export function NearbyMap({ students, center, zoom, className }: NearbyMapProps) {
-  const displayStudents = students
+export function NearbyMap({ students, center, zoom, className, meId }: NearbyMapProps) {
+  const displayStudents = useMemo(
+    () => students.map((s) => (s.lat && s.lng ? s : cityCoords[s.city] ? { ...s, lat: cityCoords[s.city][0], lng: cityCoords[s.city][1] } : s)),
+    [students],
+  )
 
   return (
     <div className={cn("relative w-full h-[520px] rounded-[18px] overflow-hidden border border-[var(--v-border)] shadow-card", className)}>
@@ -30,29 +49,53 @@ export function NearbyMap({ students, center, zoom, className }: NearbyMapProps)
         className="w-full h-full"
       >
         <MapControls showZoom position="bottom-right" />
-        {displayStudents.map((student) => (
+        {displayStudents.map((student) => {
+          const isMe = student.id === meId
+          return (
           <MapMarker
             key={student.id}
             longitude={student.lng}
             latitude={student.lat}
           >
             <MarkerContent>
-              <div className="w-10 h-10 rounded-full border-2 border-[#5D7B3D] overflow-hidden bg-[var(--v-card)] shadow-lg cursor-pointer hover:scale-110 transition-transform">
-                <img
-                  src={student.avatar}
-                  alt={student.name}
-                  className="w-full h-full object-cover"
-                />
+              <div className={cn(
+                "rounded-full overflow-hidden bg-[var(--v-card)] shadow-lg cursor-pointer hover:scale-110 transition-transform relative",
+                isMe
+                  ? "w-12 h-12 border-2 border-[#E4568B] ring-2 ring-[#E4568B]/40"
+                  : "w-10 h-10 border-2 border-[#5D7B3D]"
+              )}>
+                {student.avatar ? (
+                  <img
+                    src={student.avatar}
+                    alt={student.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-[var(--v-bg-secondary)] flex items-center justify-center">
+                    <User className="w-5 h-5 text-[var(--v-muted)]" />
+                  </div>
+                )}
               </div>
+              {isMe && (
+                <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[#E4568B] border-2 border-white flex items-center justify-center shadow-md">
+                  <span className="text-[9px] text-white font-bold">You</span>
+                </div>
+              )}
             </MarkerContent>
             <MarkerPopup>
               <div className="w-56 p-0.5">
                 <div className="flex items-start gap-3 mb-3">
-                  <img
-                    src={student.avatar}
-                    alt={student.name}
-                    className="w-11 h-11 rounded-xl border border-[var(--v-border)] bg-[var(--v-card)] flex-shrink-0"
-                  />
+                  {student.avatar ? (
+                    <img
+                      src={student.avatar}
+                      alt={student.name}
+                      className="w-11 h-11 rounded-xl border border-[var(--v-border)] bg-[var(--v-card)] flex-shrink-0"
+                    />
+                  ) : (
+                    <div className="w-11 h-11 rounded-xl border border-[var(--v-border)] bg-[var(--v-bg-secondary)] flex items-center justify-center flex-shrink-0">
+                      <User className="w-5 h-5 text-[var(--v-muted)]" />
+                    </div>
+                  )}
                   <div className="min-w-0 flex-1">
                     <p className="font-bold text-sm text-[var(--v-heading)] truncate">{student.name}</p>
                     <p className="text-xs text-[var(--v-muted)] truncate">{student.college}</p>
@@ -126,7 +169,8 @@ export function NearbyMap({ students, center, zoom, className }: NearbyMapProps)
               </div>
             </MarkerPopup>
           </MapMarker>
-        ))}
+          )
+        })}
       </Map>
     </div>
   )

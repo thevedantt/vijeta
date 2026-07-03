@@ -3,16 +3,13 @@ import {
   doc,
   addDoc,
   updateDoc,
-  deleteDoc,
   getDoc,
   getDocs,
   query,
   where,
   orderBy,
-  limit,
   onSnapshot,
   serverTimestamp,
-  setDoc,
   type Timestamp,
   type Unsubscribe,
 } from "firebase/firestore"
@@ -74,10 +71,22 @@ export async function sendMessage(chatId: string, senderId: string, text: string
     createdAt: serverTimestamp(),
     read: false,
   })
-  await updateDoc(conversationRef(chatId), {
+
+  const convRef = conversationRef(chatId)
+  const convSnap = await getDoc(convRef)
+  const convData = convSnap.data()
+  const unread = { ...(convData?.unread ?? {}) }
+  for (const pid of convData?.participantIds ?? []) {
+    if (pid !== senderId) {
+      unread[pid] = (unread[pid] ?? 0) + 1
+    }
+  }
+
+  await updateDoc(convRef, {
     lastMessage: text,
     lastTime: serverTimestamp(),
     updatedAt: serverTimestamp(),
+    unread,
   })
   return msgDoc.id
 }
@@ -102,11 +111,29 @@ export function subscribeConversations(
   userId: string,
   callback: (convs: ChatConversation[]) => void,
 ): Unsubscribe {
+  let unsub: Unsubscribe = () => {}
   const q = query(chatsRef, where("participantIds", "array-contains", userId), orderBy("updatedAt", "desc"))
-  return onSnapshot(q, (snapshot) => {
-    const convs = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as ChatConversation))
-    callback(convs)
-  })
+  unsub = onSnapshot(
+    q,
+    (snapshot) => {
+      const convs = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as ChatConversation))
+      callback(convs)
+    },
+    (error) => {
+      console.warn("Firestore ordered query failed, falling back to unordered query. Create the composite index to fix:", error)
+      const fallbackQ = query(chatsRef, where("participantIds", "array-contains", userId))
+      unsub = onSnapshot(fallbackQ, (snap) => {
+        const convs = snap.docs.map((d) => ({ id: d.id, ...d.data() } as ChatConversation))
+        convs.sort((a, b) => {
+          const ta = a.updatedAt?.toMillis() ?? 0
+          const tb = b.updatedAt?.toMillis() ?? 0
+          return tb - ta
+        })
+        callback(convs)
+      })
+    },
+  )
+  return () => unsub()
 }
 
 export function subscribeMessages(

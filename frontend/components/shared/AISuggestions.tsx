@@ -11,7 +11,7 @@ const suggestions = [
     subtitle: "Based on your React & Python skills",
     match: "95% match",
     color: "green",
-    href: "/opportunity/o1",
+    href: "/simple/sih",
   },
   {
     icon: Target,
@@ -19,7 +19,7 @@ const suggestions = [
     subtitle: "Your open source experience fits",
     match: "88% match",
     color: "blue",
-    href: "/opportunity/o13",
+    href: "/simple/gsoc",
   },
   {
     icon: Lightbulb,
@@ -27,7 +27,7 @@ const suggestions = [
     subtitle: "Aligns with your FinTech interest",
     match: "82% match",
     color: "yellow",
-    href: "/opportunity/o14",
+    href: "/simple/rbi-fintech",
   },
 ]
 
