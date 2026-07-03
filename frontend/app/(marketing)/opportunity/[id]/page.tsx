@@ -3,7 +3,7 @@
 import { use, useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import {
   ArrowLeft,
   Calendar,
@@ -12,12 +12,13 @@ import {
   Trophy,
   Wifi,
   Bookmark,
-  Share2,
   CheckCircle,
+  X,
+  Send,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ShowcaseCard } from "@/components/shared/ShowcaseCard"
-import type { Opportunity, Showcase } from "@/types"
+import type { Opportunity, Showcase, Student } from "@/types"
 
 const typeColors: Record<string, { bg: string; text: string }> = {
   Hackathon: { bg: "#5D7B3D10", text: "#5D7B3D" },
@@ -35,10 +36,13 @@ export default function OpportunityDetailPage({ params }: { params: Promise<{ id
   const [relatedShowcases, setRelatedShowcases] = useState<Showcase[]>([])
   const [loading, setLoading] = useState(true)
   const [saved, setSaved] = useState(false)
-  const [shareCopied, setShareCopied] = useState(false)
+  const [showSharePopup, setShowSharePopup] = useState(false)
+  const [friends, setFriends] = useState<Student[]>([])
+  const [sendingTo, setSendingTo] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true)
 
     fetch(`/api/opportunities/${id}`)
@@ -76,10 +80,29 @@ export default function OpportunityDetailPage({ params }: { params: Promise<{ id
     if (res.ok) setSaved(true)
   }
 
-  function handleShare() {
-    navigator.clipboard.writeText(window.location.href)
-    setShareCopied(true)
-    setTimeout(() => setShareCopied(false), 2000)
+  async function handleShare() {
+    const res = await fetch("/api/friends")
+    if (!res.ok) return
+    const data = await res.json()
+    setFriends(data.friends ?? [])
+    setShowSharePopup(true)
+  }
+
+  async function handleSendToUser(userId: string) {
+    if (sendingTo) return
+    setSendingTo(userId)
+    try {
+      const meRes = await fetch("/api/users/me")
+      const me = await meRes.json()
+      const { findDirectConversation, createConversation, sendMessage } = await import("@/lib/firestore/chat")
+      let chatId = (await findDirectConversation(me.id, userId))?.id
+      if (!chatId) chatId = await createConversation("direct", [me.id, userId])
+      const text = `Check out this opportunity: ${opp?.title}\n${window.location.href}`
+      await sendMessage(chatId, me.id, text)
+      setShowSharePopup(false)
+    } finally {
+      setSendingTo(null)
+    }
   }
 
   if (loading) {
@@ -219,7 +242,7 @@ export default function OpportunityDetailPage({ params }: { params: Promise<{ id
                   onClick={handleShare}
                   className="flex-1 h-11 rounded-[14px] border-[#E8E8E8] gap-2 text-sm"
                 >
-                  <Share2 className="w-4 h-4" /> {shareCopied ? "Copied!" : "Share"}
+                  <Send className="w-4 h-4" /> Send
                 </Button>
               </div>
             </div>
@@ -254,6 +277,70 @@ export default function OpportunityDetailPage({ params }: { params: Promise<{ id
           </motion.div>
         </div>
       </div>
+
+      {/* Send to Friend Popup */}
+      <AnimatePresence>
+        {showSharePopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+            onClick={() => setShowSharePopup(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-[24px] shadow-xl w-full max-w-sm overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between px-6 pt-6 pb-3">
+                <h3 className="font-bold text-[#1F2430]">Send to</h3>
+                <button
+                  onClick={() => setShowSharePopup(false)}
+                  className="w-8 h-8 rounded-lg hover:bg-[#F8F9FC] flex items-center justify-center"
+                >
+                  <X className="w-4 h-4 text-[#8B93A7]" />
+                </button>
+              </div>
+              <div className="overflow-y-auto max-h-80">
+                {friends.length === 0 ? (
+                  <div className="px-6 py-8 text-center text-sm text-[#8B93A7]">
+                    No friends yet. Connect with people to share opportunities!
+                  </div>
+                ) : (
+                  <div className="px-2 pb-2">
+                    {friends.map((friend) => (
+                      <button
+                        key={friend.id}
+                        onClick={() => handleSendToUser(friend.id)}
+                        disabled={sendingTo === friend.id}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#F8F9FC] transition-colors disabled:opacity-50 text-left"
+                      >
+                        {friend.avatar ? (
+                          <img src={friend.avatar} alt="" className="w-10 h-10 rounded-full bg-[#F8F9FC]" />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-[#F8F9FC]" />
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-[#1F2430] truncate">{friend.name}</p>
+                          <p className="text-xs text-[#8B93A7] truncate">{friend.college}</p>
+                        </div>
+                        {sendingTo === friend.id ? (
+                          <span className="text-xs text-[#5D7B3D] font-medium">Sending...</span>
+                        ) : (
+                          <Send className="w-4 h-4 text-[#8B93A7] flex-shrink-0" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
