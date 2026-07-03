@@ -75,7 +75,7 @@ export function FeaturesSection() {
             Everything you need to win
           </h2>
           <p className="text-lg text-[var(--v-body)] max-w-2xl mx-auto">
-            Vijeta is the complete platform — from finding the right opportunity to publishing your winning showcase.
+            विजेता is the complete platform — from finding the right opportunity to publishing your winning showcase.
           </p>
         </div>
 

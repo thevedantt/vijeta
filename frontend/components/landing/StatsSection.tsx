@@ -42,7 +42,7 @@ export function StatsSection() {
             A growing community of winners
           </h2>
           <p className="text-lg text-[var(--v-body)] max-w-xl mx-auto">
-            Join thousands of ambitious students building their future on Vijeta.
+            Join thousands of ambitious students building their future on विजेता.
           </p>
         </motion.div>
 

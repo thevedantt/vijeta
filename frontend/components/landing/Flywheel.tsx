@@ -32,7 +32,7 @@ export function Flywheel() {
             The Solution
           </span>
           <h2 className="text-4xl font-bold text-[var(--v-heading)] mb-4">
-            The Vijeta Flywheel
+            The विजेता Flywheel
           </h2>
           <p className="text-lg text-[var(--v-body)] max-w-2xl mx-auto">
             One continuous journey from discovery to mentorship. Every winner creates the next generation of winners.

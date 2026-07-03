@@ -38,7 +38,7 @@ export function CTASection() {
 
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
               Ready to become the next{" "}
-              <span className="text-[#F6C94D]">Vijeta?</span>
+              <span className="text-[#F6C94D]">विजेता?</span>
             </h2>
             <p className="text-lg text-white/60 mb-10 max-w-xl mx-auto">
               Join 24,000+ ambitious students discovering opportunities, building teams, and winning competitions.
@@ -70,6 +70,36 @@ export function CTASection() {
             </div>
           </div>
         </motion.div>
+      </div>
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+        <div className="flex flex-col items-center gap-5 py-6 border-t border-[var(--v-border)]">
+          <p className="text-xl text-[var(--v-muted)] font-medium">
+            Developed by <span className="text-[var(--v-heading)] font-semibold">Mindflayers</span>
+          </p>
+          <div className="flex items-center gap-6">
+            {[
+              { username: "saniyacodes06", href: "https://github.com/saniyacodes06" },
+              { username: "thevedantt", href: "https://github.com/thevedantt" },
+              { username: "m-spunky", href: "https://github.com/m-spunky" },
+            ].map((dev) => (
+              <a
+                key={dev.username}
+                href={dev.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative"
+                title={dev.username}
+              >
+                <img
+                  src={`https://github.com/${dev.username}.png`}
+                  alt={dev.username}
+                  className="w-16 h-16 rounded-full border-2 border-[var(--v-border)] group-hover:border-[#5D7B3D] transition-colors"
+                />
+              </a>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   )

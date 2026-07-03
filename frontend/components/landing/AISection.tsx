@@ -168,7 +168,7 @@ export function AISection() {
               <div className="flex items-center gap-3 bg-[var(--v-bg-secondary)] rounded-xl border border-[var(--v-border)] px-4 py-3">
                 <input
                   type="text"
-                  placeholder="Ask Vijeta AI anything..."
+                  placeholder="Ask विजेता AI anything..."
                   className="flex-1 text-sm text-[var(--v-heading)] bg-transparent outline-none placeholder:text-[var(--v-muted)]"
                   readOnly
                 />
