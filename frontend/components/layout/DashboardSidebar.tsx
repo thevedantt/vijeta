@@ -17,6 +17,7 @@ import {
   X,
   History,
   Bot,
+  MessageCircle,
   Sparkles,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -164,6 +165,29 @@ export function DashboardSidebar({ isOpen, onClose, collapsed, onToggleCollapse 
                   <Sparkles className="w-3 h-3 text-[#F6C94D]" />
                 </span>
                 {pathname === "/assistant" && <ChevronRight className="w-3 h-3 ml-auto text-white/70" />}
+              </>
+            )}
+          </Link>
+
+          {/* Chat */}
+          <Link
+            href="/chat"
+            className={cn(
+              "flex items-center rounded-xl transition-all duration-150",
+              collapsed
+                ? "justify-center w-12 h-12 mx-auto"
+                : "gap-3 px-3 py-2.5 text-sm font-medium",
+              pathname === "/chat"
+                ? "bg-[#5D7B3D] text-white shadow-sm"
+                : "text-[var(--v-body)] hover-bg-v-hover hover:text-[var(--v-heading)]"
+            )}
+            title={collapsed ? "Chat" : undefined}
+          >
+            <MessageCircle className={cn("w-4 h-4 flex-shrink-0", pathname === "/chat" ? "text-white" : "text-[var(--v-muted)]")} />
+            {!collapsed && (
+              <>
+                Chat
+                {pathname === "/chat" && <ChevronRight className="w-3 h-3 ml-auto text-white/70" />}
               </>
             )}
           </Link>

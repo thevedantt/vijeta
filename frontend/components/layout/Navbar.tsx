@@ -14,6 +14,7 @@ const navLinks = [
   { href: "/#how-it-works", label: "How it Works" },
   { href: "/#showcase", label: "Showcase" },
   { href: "/#faq", label: "FAQ" },
+  { href: "/dashboard", label: "Dashboard" },
 ]
 
 export function Navbar() {
@@ -65,7 +66,7 @@ export function Navbar() {
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2">
             <ThemeToggle />
             <Link href="/dashboard">
               <Button variant="ghost" size="sm" className="text-[var(--v-body)] hover:text-[var(--v-heading)]">
