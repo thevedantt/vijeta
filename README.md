@@ -2,7 +2,7 @@
   <img src="frontend/public/banner.png" alt="Vijeta Banner" width="100%" />
 </p>
 
-<h1 align="center">विजेता</h1>
+<h1 align="center">"..विजेता.."</h1>
 <h3 align="center">The Operating System for Ambitious Students</h3>
 
 <p align="center">
@@ -19,11 +19,11 @@
 
 ---
 
-Every year, thousands of talented students never participate in scholarships, hackathons, and competitions — not because they lack ability, but because they don't know where to start, can't find teammates, or lack proper guidance.
+Every year, thousands of talented students never participate in scholarships, hackathons, and competitions not because they lack ability, but because they don't know where to start, can't find teammates, or lack proper guidance.
 
 **Vijeta removes every barrier between "I want to participate" and "I became a winner."**
 
-Winning should not be the end of the journey. Every winner creates resources that help produce the next generation of winners — a self-sustaining ecosystem of excellence.
+Winning should not be the end of the journey. Every winner creates resources that help produce the next generation of winners a self-sustaining ecosystem of excellence.
 
 ---
 
@@ -202,9 +202,7 @@ vijeta/
 
 ---
 
+
 <p align="center">
-  Built with ❤️ by <a href="https://github.com/vedanttalekar">Vedant Talekar</a>
-</p>
-<p align="center">
-  <strong>Vijeta</strong> — वैजेत (Victory)
+  <strong>Vijeta</strong> — विजेता (Victory)
 </p>
